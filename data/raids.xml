@@ -729,6 +729,22 @@
    </always_include>
   </deck>
  </raid>
+	
+<raid>
+ <id>50</id>
+ <name>Kalihmah Raid</name>
+ <levels>26</levels>
+ <commander>25928</commander>
+ <fortress_card id="18598"/>
+ <deck>
+  <always_include>
+   <card replicates="3">58658</card>
+   <card replicates="3">58668</card>
+   <card replicates="3">58678</card>
+   <card replicates="3">58688</card>
+  </always_include>
+ </deck>
+</raid>	
 <!-- END of Raids -->
 
 
