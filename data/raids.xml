@@ -750,6 +750,13 @@
 	<name>Silus Raid</name>
 	<levels>26</levels>
 	<commander>25996</commander>
+	<effects>
+			<skill id="overload" all="1"/>
+			<skill id="rally" all="1" x=".65"/>
+			<skill id="enfeeble" all="1" x=".45"/>
+			<skill id="protect" all="1" x=".55"/>
+			<skill id="weaken" all="1" x="1.35"/>
+	</effects>
 	<deck>
 		<card_pool amount="10">
 			<card replicates="3">59986</card>
