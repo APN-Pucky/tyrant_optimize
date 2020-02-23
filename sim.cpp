@@ -454,12 +454,10 @@ void prepend_on_death(Field* fd,bool paybacked=false)
 {
     if (fd->killed_units.empty())
         return;
-    if (__builtin_expect(fd->fixes[Fix::death_from_bge], true)
-        && __builtin_expect(fd->current_phase == Field::bge_phase, false))
+    bool skip_all_except_summon = fd->fixes[Fix::death_from_bge] && (fd->current_phase == Field::bge_phase);
+    if (skip_all_except_summon)
     {
-        _DEBUG_MSG(2, "Death from BGE Fix (skip all death depended triggers)\n");
-        fd->killed_units.clear();
-        return;
+        _DEBUG_MSG(2, "Death from BGE Fix (skip all death depended triggers except summon)\n");
     }
     auto& assaults = fd->players[fd->killed_units[0]->m_player]->assaults;
     unsigned stacked_poison_value = 0;
@@ -469,12 +467,15 @@ void prepend_on_death(Field* fd,bool paybacked=false)
     {
         // Skill: Scavenge
         // Any unit dies => perm-hp-buff
-        resolve_scavenge(fd->players[0]->assaults);
-        resolve_scavenge(fd->players[1]->assaults);
-        resolve_scavenge(fd->players[0]->structures);
-        resolve_scavenge(fd->players[1]->structures);
+        if (__builtin_expect(!skip_all_except_summon, true))
+        {
+            resolve_scavenge(fd->players[0]->assaults);
+            resolve_scavenge(fd->players[1]->assaults);
+            resolve_scavenge(fd->players[0]->structures);
+            resolve_scavenge(fd->players[1]->structures);
+        }
 
-        if (status->m_card->m_type == CardType::assault)
+        if ((status->m_card->m_type == CardType::assault) && (!skip_all_except_summon))
         {
             // Skill: Avenge
             const unsigned host_idx = status->m_index;
@@ -549,6 +550,7 @@ void prepend_on_death(Field* fd,bool paybacked=false)
         }
 
         // Passive BGE: Revenge
+        // Fix::death_from_bge: should not affect passive BGE, keep it as was before
         if (__builtin_expect(fd->bg_effects[fd->tapi][PassiveBGE::revenge], false))
         {
             if (fd->bg_effects[fd->tapi][PassiveBGE::revenge] < 0)
@@ -566,6 +568,8 @@ void prepend_on_death(Field* fd,bool paybacked=false)
         // resolve On-Death skills
         for (auto& ss: status->m_card->m_skills_on_death)
         {
+            if (__builtin_expect(skip_all_except_summon && (ss.id != Skill::summon), false))
+            { continue; }
         	SkillSpec tss = ss;
             _DEBUG_MSG(2, "On Death %s: Preparing (tail) skill %s\n",
                     status_description(status).c_str(), skill_description(fd->cards, ss).c_str());
@@ -941,11 +945,19 @@ struct PlayCard
 
 
             // resolve On-Play skills
-            for (const auto& ss: card->m_skills_on_play)
+            // Fix Death on BGE: [On Play] skills during BGE phase can be invoked only by means of [On Death] trigger
+            if (__builtin_expect(fd->fixes[Fix::death_from_bge] && (fd->current_phase != Field::bge_phase), true))
             {
-                _DEBUG_MSG(2, "On Play %s: Preparing (tail) skill %s\n",
-                        status_description(status).c_str(), skill_description(fd->cards, ss).c_str());
-                fd->skill_queue.emplace_back(status, ss);
+                for (const auto& ss: card->m_skills_on_play)
+                {
+                    _DEBUG_MSG(2, "On Play %s: Preparing (tail) skill %s\n",
+                            status_description(status).c_str(), skill_description(fd->cards, ss).c_str());
+                    fd->skill_queue.emplace_back(status, ss);
+                }
+            }
+            else
+            {
+                _DEBUG_MSG(2, "Death from BGE Fix: suppress [On Play] skills invoked by [On Death] summon\n");
             }
 
             return status;
