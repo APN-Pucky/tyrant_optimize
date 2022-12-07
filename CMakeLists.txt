@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.6)
 # partial module - included by src/cmake/CMakeLists.txt
 
 #set(TGT test-${PKG}-cmake)
-set( CMAKE_CXX_STANDARD 11 )
+set( CMAKE_CXX_STANDARD 14 )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Ofast")
 if(STATIC)
 set( BUILD_SHARED_LIBRARIES OFF)
