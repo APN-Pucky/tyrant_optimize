@@ -3,7 +3,7 @@ name: test
 on: [push, pull_request]
 
 jobs:
- release:
+ test:
     runs-on: ubuntu-20.04
 
     steps:
