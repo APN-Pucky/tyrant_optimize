@@ -20,7 +20,7 @@ jobs:
             name: "Windows Latest MinGW", artifact: "Windows-MinGW.7z",
             os: windows-latest,
             platform: windows,
-            platform_version: 2022,
+            platform_version: 2019,
             cc: "gcc", cxx: "g++"
           }
         

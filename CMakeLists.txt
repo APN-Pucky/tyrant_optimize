@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 2.6)
-# This file is part of MXE. See LICENSE.md for licensing information.
 
 # partial module - included by src/cmake/CMakeLists.txt
 
