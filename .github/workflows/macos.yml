@@ -37,7 +37,7 @@ jobs:
           # OPTIONAL: Specify a platform version
           platform_version: 10.15
           # OPTIONAL: Specify a custom install location
-          boost_install_dir: /home/runner/some_directory
+          #boost_install_dir: /home/runner/some_directory
           # OPTIONAL: Specify a toolset
           toolset: clang
 
