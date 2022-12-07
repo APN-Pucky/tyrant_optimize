@@ -3,8 +3,8 @@
 curr_dir=$(dirname "$0")
 olds_dir="$curr_dir/old-xmls.d"
 
-#BASE_URL="http://mobile.tyrantonline.com/assets/"
-BASE_URL="http://mobile-dev.tyrantonline.com/assets/"
+#BASE_URL="https://mobile.tyrantonline.com/assets/"
+BASE_URL="https://mobile-dev.tyrantonline.com/assets/"
 FILES=(
    fusion_recipes_cj2.xml
    missions.xml
