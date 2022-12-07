@@ -37,7 +37,7 @@ jobs:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
           boost_version: 1.78.0
           # OPTIONAL: Specify a platform version
-          platform_version: 10.15
+          platform_version: 11
           # OPTIONAL: Specify a custom install location
           #boost_install_dir: /home/runner/some_directory
           # OPTIONAL: Specify a toolset
