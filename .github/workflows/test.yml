@@ -11,7 +11,7 @@ jobs:
     - name: install
       run: |
         sudo apt-get update
-        sudo apt-get --yes install g++ make cmake libboost-all-dev 
+        sudo apt-get --yes install g++ make cmake libboost-all-dev lcov
     - name: build
       run: make debug && make test
     - name: xml fetch
