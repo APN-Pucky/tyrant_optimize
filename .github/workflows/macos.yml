@@ -20,7 +20,7 @@ jobs:
             name: "macOS Latest Clang", artifact: "macOS.zip",
             os: macos-latest,
             platform: macos,
-            platform_version: 11,
+            platform_version: 12,
             cc: "clang", cxx: "clang++"
           }
         
@@ -35,7 +35,7 @@ jobs:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
-          boost_version: 1.78.0
+          boost_version: 1.80.0-beta.1
           # OPTIONAL: Specify a platform version
           platform_version: ${{ matrix.config.platform_version }}
           # OPTIONAL: Specify a custom install location
