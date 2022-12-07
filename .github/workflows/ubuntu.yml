@@ -11,7 +11,7 @@ env:
 jobs:
   build:
     name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.platform}}-${{ matrix.config.platform_version}}
     strategy:
       fail-fast: false
       matrix:
@@ -19,6 +19,8 @@ jobs:
         - {
             name: "Ubuntu Latest GCC", artifact: "Linux.7z",
             os: ubuntu-latest,
+            platform: ubuntu,
+            platform_version: 20.04
             cc: "gcc", cxx: "g++"
           }
         
@@ -36,7 +38,7 @@ jobs:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
           boost_version: 1.79.0
           # OPTIONAL: Specify a platform version
-          #platform_version: 18.04
+          platform_version: ${{ matrix.config.platform_version}}
           # OPTIONAL: Specify a custom install location
           #boost_install_dir: /home/runner/some_directory
           # OPTIONAL: Specify a toolset
