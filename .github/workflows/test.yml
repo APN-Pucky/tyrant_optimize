@@ -17,4 +17,4 @@ jobs:
     - name: xml fetch
       run: ./update_xml.sh
     - name: test
-      run: ./tuo-test --log_level=message
+      run: ./tuo-test
