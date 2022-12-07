@@ -36,7 +36,7 @@ jobs:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
-          boost_version: 1.78.0
+          boost_version: 1.80.0
           # OPTIONAL: Specify a custon install location
           #boost_install_dir: C:\some_directory
           # OPTIONAL: Specify a platform version

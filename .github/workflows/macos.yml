@@ -20,7 +20,7 @@ jobs:
             name: "macOS Latest Clang", artifact: "macOS.zip",
             os: macos-latest,
             platform: macos,
-            platform_version: 11,
+            platform_version: 12,
             cc: "clang", cxx: "clang++"
           }
         
@@ -29,13 +29,13 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install boost
-      uses: MarkusJx/install-boost@v2.4.1
+      uses: MarkusJx/install-boost@v2.4.3
       id: install-boost
       with:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
-          boost_version: 1.78.0
+          boost_version: 1.80.0.beta1
           # OPTIONAL: Specify a platform version
           platform_version: ${{ matrix.config.platform_version }}
           # OPTIONAL: Specify a custom install location
@@ -91,6 +91,29 @@ jobs:
           )
         endif()
 
+    - name: Download ccache
+      id: ccache
+      shell: cmake -P {0}
+      run: |
+        set(ccache_url "https://github.com/cristianadam/ccache/releases/download/v$ENV{CCACHE_VERSION}/${{ runner.os }}.tar.xz")
+        file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+        execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+
+    - name: Prepare ccache timestamp
+      id: ccache_cache_timestamp
+      shell: cmake -P {0}
+      run: |
+        string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
+        file(APPEND "$ENV{GITHUB_OUTPUT}" "timestamp=${current_date}")
+
+    - name: ccache cache files
+      uses: actions/cache@v3
+      with:
+        path: .ccache
+        key: ${{ matrix.config.name }}-ccache-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+        restore-keys: |
+          ${{ matrix.config.name }}-ccache-
+
     - name: Configure
       shell: cmake -P {0}
       run: |
@@ -123,6 +146,8 @@ jobs:
             -D CMAKE_BUILD_TYPE=$ENV{BUILD_TYPE}
             -G Ninja
             -D CMAKE_MAKE_PROGRAM=ninja
+            -D CMAKE_C_COMPILER_LAUNCHER=ccache
+            -D CMAKE_CXX_COMPILER_LAUNCHER=ccache
           RESULT_VARIABLE result
         )
         if (NOT result EQUAL 0)
