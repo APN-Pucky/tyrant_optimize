@@ -16,3 +16,7 @@ jobs:
       run: make test
     - name: test
       run: ./tuo-test --log_level=message
+    - name: gcov
+      run: gcov *.cpp -l -p -r -o obj-test
+    - name: Report Coveralls
+      uses: AndreMiras/coveralls-python-action@develop
