@@ -20,5 +20,7 @@ jobs:
       run: ./tuo-test --log_level=message
     - name: gcov
       run: gcov *.cpp -l -p -r -o obj-test
-    - name: Report Coveralls
-      uses: AndreMiras/coveralls-python-action@develop
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
