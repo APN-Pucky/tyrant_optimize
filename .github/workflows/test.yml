@@ -14,6 +14,8 @@ jobs:
         sudo apt-get --yes install g++ make cmake libboost-all-dev 
     - name: build
       run: make test
+    - name: xml fetch
+      run: ./update_xml.sh
     - name: test
       run: ./tuo-test --log_level=message
     - name: gcov
