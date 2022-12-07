@@ -31,4 +31,5 @@ find_package(Boost EXACT COMPONENTS system thread filesystem regex timer REQUIRE
 
 target_link_libraries(tuo ${Boost_LIBRARIES} )
 
+install(TARGETS tuo)
 #install(TARGETS ${TGT} DESTINATION bin)
