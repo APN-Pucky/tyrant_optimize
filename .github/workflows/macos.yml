@@ -20,7 +20,7 @@ jobs:
             name: "macOS Latest Clang", artifact: "macOS.zip",
             os: macos-latest,
             platform: macos,
-            platform_version: 10.15,
+            platform_version: 11,
             cc: "clang", cxx: "clang++"
           }
         
