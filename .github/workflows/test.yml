@@ -9,8 +9,8 @@ jobs:
     steps:
     - name: install
       run: |
-      sudo apt-get update
-      sudo apt-get --yes install g++ make cmake libboost-all-dev 
+        sudo apt-get update
+        sudo apt-get --yes install g++ make cmake libboost-all-dev 
     - name: build
       run: make test
     - name: test
