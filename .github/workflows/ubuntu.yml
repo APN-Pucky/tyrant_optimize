@@ -20,7 +20,7 @@ jobs:
             name: "Ubuntu Latest GCC", artifact: "Linux.7z",
             os: ubuntu-latest,
             platform: ubuntu,
-            platform_version: 20.04
+            platform_version: 20.04,
             cc: "gcc", cxx: "g++"
           }
         
