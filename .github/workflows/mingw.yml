@@ -40,7 +40,7 @@ jobs:
           # OPTIONAL: Specify a platform version
           platform_version: ${{ matrix.config.platform_version}}
           # OPTIONAL: Specify a toolset
-          toolset: gcc
+          toolset: mingw
 
       # NOTE: If a boost version matching all requirements cannot be found,
       # this build step will fail
