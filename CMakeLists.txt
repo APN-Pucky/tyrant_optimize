@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 2.6)
 set( CMAKE_CXX_STANDARD 11 )
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Ofast")
 set( BUILD_SHARED_LIBRARIES OFF)
-set( BOOST_USE_STATIC_LIBS ON )
+set( Boost_USE_STATIC_LIBS ON )
 set( CMAKE_EXE_LINKER_FLAGS "-static")
 add_definitions(-DTYRANT_OPTIMIZER_VERSION="${VERSION}" ${DEBUG} -DNQUEST)
 
