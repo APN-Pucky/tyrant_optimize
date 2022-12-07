@@ -17,10 +17,12 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest MinGW", artifact: "Windows-MinGW.7z",
+            name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
             os: windows-latest,
-            cc: "gcc", cxx: "g++"
+            cc: "cl", cxx: "cl",
+            environment_script: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
+
         
 
     steps:
@@ -32,13 +34,13 @@ jobs:
           # REQUIRED: Specify the required boost version
           # A list of supported versions can be found here:
           # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
-          boost_version: 1.68.0
+          boost_version: 1.73.0
           # OPTIONAL: Specify a custon install location
           #boost_install_dir: C:\some_directory
           # OPTIONAL: Specify a platform version
           #platform_version: 2019
           # OPTIONAL: Specify a toolset
-          toolset: gcc
+          toolset: cl
 
       # NOTE: If a boost version matching all requirements cannot be found,
       # this build step will fail
