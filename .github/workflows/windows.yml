@@ -286,6 +286,6 @@ jobs:
         upload_url: ${{ steps.get_release.outputs.upload_url }}
         asset_path: ./${{ matrix.config.artifact }}
         asset_name: ${{ matrix.config.artifact }}
-        asset_content_type: application/x-gtar
+        asset_content_type: application/zip
 
 
