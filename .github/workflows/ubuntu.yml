@@ -1,4 +1,4 @@
-name: CMake Build Matrix
+name: ubuntu
 
 on: [push, pull_request]
 
