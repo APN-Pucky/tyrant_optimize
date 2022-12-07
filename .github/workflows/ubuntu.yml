@@ -17,29 +17,35 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
-            os: windows-latest,
-            cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
-          }
-        - {
-            name: "Windows Latest MinGW", artifact: "Windows-MinGW.7z",
-            os: windows-latest,
-            cc: "gcc", cxx: "g++"
-          }
-        - {
             name: "Ubuntu Latest GCC", artifact: "Linux.7z",
             os: ubuntu-latest,
             cc: "gcc", cxx: "g++"
           }
-        - {
-            name: "macOS Latest Clang", artifact: "macOS.7z",
-            os: macos-latest,
-            cc: "clang", cxx: "clang++"
-          }
+        
 
     steps:
     - uses: actions/checkout@v3
+    
+    - name: Install boost
+      if: 
+      uses: MarkusJx/install-boost@v2.4.1
+      id: install-boost
+      with:
+          # REQUIRED: Specify the required boost version
+          # A list of supported versions can be found here:
+          # https://github.com/actions/boost-versions/blob/main/versions-manifest.json
+          boost_version: 1.73.0
+          # OPTIONAL: Specify a platform version
+          #platform_version: 18.04
+          # OPTIONAL: Specify a custom install location
+          #boost_install_dir: /home/runner/some_directory
+          # OPTIONAL: Specify a toolset
+          toolset: gcc
+          # OPTIONAL: Specify an architecture
+          arch: x86
+
+      # NOTE: If a boost version matching all requirements cannot be found,
+      # this build step will fail
 
     - name: Download Ninja and CMake
       shell: cmake -P {0}
