@@ -20,7 +20,7 @@ jobs:
             name: "Windows Latest MSVC", artifact: "Windows-MSVC.zip",
             os: windows-latest,
             platform: windows,
-            platform_versoin: 2022,
+            platform_versoin: 2019,
             cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
           }
