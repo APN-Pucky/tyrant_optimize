@@ -18,9 +18,10 @@ jobs:
       run: ./update_xml.sh
     - name: test
       run: ./tuo-test --log_level=message
-    - name: gcov
-      run: gcov *.cpp -l -p -r -o obj-test
+    - name: lcov
+      run: lcov -b . -d . -o coverage.output --capture
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-lcov: coverage.output
