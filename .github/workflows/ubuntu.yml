@@ -30,7 +30,7 @@ jobs:
     
     - name: Install boost
       if: 
-      uses: MarkusJx/install-boost@v2.4.1
+      uses: MarkusJx/install-boost@v2.4.4
       id: install-boost
       with:
           # REQUIRED: Specify the required boost version
