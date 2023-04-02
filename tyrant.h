@@ -21,6 +21,13 @@ enum Fix
     revenge_on_death,
     death_from_bge,
     legion_under_mega,
+    barrier_each_turn,
+    dont_evade_mimic_selection,
+    leech_increase_max_hp,
+    counter_without_damage,
+    subdue_before_attack,
+    corrosive_protect_armor,
+    poison_after_attacked,
     num_fixes
 };
 

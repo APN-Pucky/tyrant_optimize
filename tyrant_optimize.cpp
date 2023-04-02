@@ -420,51 +420,60 @@ void init()
 #ifndef NQUEST
     // quest = new Quest(); //TODO Quest bugged in Android now here
 #endif
-    allowed_candidates.clear();
-    disallowed_candidates.clear();
-    disallowed_recipes.clear();
+	allowed_candidates.clear();
+	disallowed_candidates.clear();
+	disallowed_recipes.clear();
 
-    // std::chrono::time_point<std::chrono::system_clock> start_time;
-    maximum_time = 0;
-    temperature = 1000;
-    coolingRate = 0.001;
+	//std::chrono::time_point<std::chrono::system_clock> start_time;
+	maximum_time=0;
+	temperature = 1000;
+	coolingRate = 0.001;
 
-    generations = 50;
-    pool_size = 0;
-    min_pool_size = 20;
-    opt_pool_keep = 1;
-    opt_pool_mutate = 1;
-    opt_pool_cross = 1;
+	generations = 50;
+	pool_size = 0;
+	min_pool_size = 20;
+	opt_pool_keep = 1;
+	opt_pool_mutate = 1;
+	opt_pool_cross = 1;
 
-    min_beam_size = 5;
+	min_beam_size = 5;
 
-    yfpool = 0;
-    efpool = 0;
+	yfpool=0;
+	efpool=0;
 
-    factions.clear();
-    invert_factions = false;
-    only_recent = false;
-    prefered_recent = false;
-    recent_percent = 5;
-    skills.clear();
-    invert_skills = false;
-    prefered_skills.clear();
-    prefered_factor = 3;
+	factions.clear();
+	invert_factions=false;
+	only_recent=false;
+	prefered_recent=false;
+	recent_percent=5;
+	skills.clear();
+	invert_skills=false;
+	prefered_skills.clear();
+	prefered_factor=3;
 
-    for (Card *c : all_cards.all_cards)
-        delete c; // prevent memory leak
-    all_cards.visible_cardset.clear();
+	for(Card *c : all_cards.all_cards) delete c; // prevent memory leak
+	all_cards.visible_cardset.clear();
 
-    // fix defaults
-    for (int i = 0; i < Fix::num_fixes; ++i)
-        fixes[i] = false;
 
-    // recommended/default fixes
-    fixes[Fix::enhance_early] = true;
-    fixes[Fix::revenge_on_death] = true;
-    fixes[Fix::death_from_bge] = true;
-    fixes[Fix::legion_under_mega] = true;
+	//fix defaults
+	for (int i=0; i < Fix::num_fixes;++i) fixes[i]=false;
 
+    //recommended/default fixes
+	fixes[Fix::enhance_early] = true;
+	fixes[Fix::revenge_on_death] = true;
+	fixes[Fix::death_from_bge] = true;
+	fixes[Fix::legion_under_mega] = true;
+
+	fixes[Fix::barrier_each_turn] = true;
+	fixes[Fix::dont_evade_mimic_selection] = true;
+	fixes[Fix::leech_increase_max_hp] = true;
+	fixes[Fix::subdue_before_attack] = true;
+
+	fixes[Fix::counter_without_damage] = false;
+	fixes[Fix::corrosive_protect_armor] = false;
+	fixes[Fix::poison_after_attacked] = false;
+  
+  
     db_limit = -1;
     use_strict_db = false;
     use_db_write = true;
@@ -2905,6 +2914,7 @@ DeckResults run(int argc, const char **argv)
 #ifdef _OPENMP
             omp_set_num_threads(opt_num_threads);
 #endif
+
             argIndex += 1;
         }
         else if (strcmp(argv[argIndex], "target") == 0)
@@ -2999,6 +3009,62 @@ DeckResults run(int argc, const char **argv)
         {
             fixes[Fix::legion_under_mega] = true;
         }
+    else if (strcmp(argv[argIndex], "update-barrier-each-turn") == 0)
+		{
+			fixes[Fix::barrier_each_turn] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-barrier-each-turn") == 0)
+		{
+			fixes[Fix::barrier_each_turn] = false;
+		}
+        else if (strcmp(argv[argIndex], "update-dont-evade-mimic-selection") == 0)
+		{
+			fixes[Fix::dont_evade_mimic_selection] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-dont-evade-mimic-selection") == 0)
+		{
+			fixes[Fix::dont_evade_mimic_selection] = false;
+		}
+        else if (strcmp(argv[argIndex], "update-leech-increase-max-hp") == 0)
+		{
+			fixes[Fix::leech_increase_max_hp] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-leech-increase-max-hp") == 0)
+		{
+			fixes[Fix::leech_increase_max_hp] = false;
+		}
+        else if (strcmp(argv[argIndex], "update-counter-without-damage") == 0)
+		{
+			fixes[Fix::counter_without_damage] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-counter-without-damage") == 0)
+		{
+			fixes[Fix::counter_without_damage] = false;
+		}
+        else if (strcmp(argv[argIndex], "update-corrosive-protect-armor") == 0)
+		{
+			fixes[Fix::corrosive_protect_armor] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-corrosive-protect-armor") == 0)
+		{
+			fixes[Fix::corrosive_protect_armor] = false;
+		}
+        else if (strcmp(argv[argIndex], "update-poison-after-attacked") == 0)
+		{
+			fixes[Fix::poison_after_attacked] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-poison-after-attacked") == 0)
+		{
+			fixes[Fix::poison_after_attacked] = false;
+		}
+        else if (strcmp(argv[argIndex], "update-subdue-before-attack") == 0)
+		{
+			fixes[Fix::subdue_before_attack] = true;
+		}
+        else if (strcmp(argv[argIndex], "no-update-subdue-before-attack") == 0)
+		{
+			fixes[Fix::subdue_before_attack] = false;
+		}
         else if (strcmp(argv[argIndex], "seed") == 0)
         {
             if (check_input_amount(argc, argv, argIndex, 1))
@@ -3358,6 +3424,7 @@ DeckResults run(int argc, const char **argv)
     }
     load_db(prefix);
     load_ml(prefix);
+
 
 #ifdef _OPENMP
     opt_num_threads = omp_get_max_threads();

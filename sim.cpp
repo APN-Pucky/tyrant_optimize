@@ -169,17 +169,30 @@ inline unsigned CardStatus::max_hp() const
 {
     return (m_card->m_health + safe_minus(m_perm_health_buff, m_subdued));
 }
-//------------------------------------------------------------------------------
+/** @brief Increase of current health.
+ *  This takes disease into account and removes as needed.
+ *
+ *  @param [in] value increase of health.
+ *  @return applied increase of health.
+ */
 inline unsigned CardStatus::add_hp(unsigned value)
 {
     value = remove_disease(this,value);
     return (m_hp = std::min(m_hp + value, max_hp()));
 }
-//------------------------------------------------------------------------------
+/** @brief Permanent increase of maximum health.
+ *  This takes disease into account and removes as needed.
+ *  The increase of the maximum health entails an increase of current health by the same amount.
+ *
+ *  @param [in] value increase of maximum health.
+ *  @return applied increase of maximum health.
+ */ 
 inline unsigned CardStatus::ext_hp(unsigned value)
 {
     value = remove_disease(this,value);
     m_perm_health_buff += value;
+    // we can safely call add_hp without worring about the second call to remove_disease because
+    // the first call will have already removed the disease or the value will be 0
     return add_hp(value);
 }
 //------------------------------------------------------------------------------
@@ -456,7 +469,13 @@ inline void resolve_scavenge(Storage<CardStatus>& store)
     }
 }
 //------------------------------------------------------------------------------
-void prepend_on_death(Field* fd,bool paybacked=false)
+/**
+ * @brief Handle death of a card
+ * 
+ * @param fd Field pointer 
+ * @param paybacked Is the death caused by payback?
+ */
+void prepend_on_death(Field* fd, bool paybacked=false)
 {
     if (fd->killed_units.empty())
         return;
@@ -1056,7 +1075,7 @@ inline bool skill_check<Skill::jam>(Field* fd, CardStatus* c, CardStatus* ref)
     template<>
 inline bool skill_check<Skill::leech>(Field* fd, CardStatus* c, CardStatus* ref)
 {
-    return can_be_healed(c);
+    return can_be_healed(c) || (fd->fixes[Fix::leech_increase_max_hp] && is_alive(c));
 }
 
     template<>
@@ -1143,6 +1162,13 @@ inline unsigned remove_absorption(Field* fd, CardStatus* status, unsigned dmg)
 {
     return remove_absorption(status,dmg);
 }
+/**
+ * @brief Remove absorption from a CardStatus
+ * 
+ * @param status CardStatus to remove absorption from
+ * @param dmg damage to remove absorption from
+ * @return unsigned remaining damage after absorption is removed
+ */
 inline unsigned remove_absorption(CardStatus* status, unsigned dmg)
 {
     unsigned remaining_dmg(dmg);
@@ -1249,6 +1275,9 @@ void turn_start_phase_update(Field*fd,CardStatus * status)
                 status->m_absorption = status->skill_base_value(Skill::absorb);
             }
             check_and_perform_bravery(fd,status);
+            if(__builtin_expect(fd->fixes[Fix::barrier_each_turn],true)){
+                status->m_protected += status->skill(Skill::barrier);
+            }
             if (status->m_delay > 0)
             {
                 _DEBUG_MSG(1, "%s reduces its timer\n", status_description(status).c_str());
@@ -1415,13 +1444,20 @@ void turn_end_phase(Field* fd)
 }
 
 //---------------------- $50 attack by assault card implementation -------------
-// Counter damage dealt to the attacker (att) by defender (def)
-// pre-condition: only valid if m_card->m_counter > 0
-
-
+/**
+ * @brief Return the damage dealt to the attacker (att) by defender (def) through counter skill
+ * The counter is increased by the attacker's enfeebled value, while the attacker's protected value is subtracted from the damage.
+ * The absorption is removed from the damage before the protected value is subtracted.
+ * 
+ * @param fd Field pointer 
+ * @param att attacker CardStatus
+ * @param def defender CardStatus
+ * @return unsigned 
+ */
 inline unsigned counter_damage(Field* fd, CardStatus* att, CardStatus* def)
 {
     _DEBUG_ASSERT(att->m_card->m_type == CardType::assault);
+    _DEBUG_ASSERT(def->skill(Skill::counter) > 0); // counter skill must be present otherwise enfeeble is wrongly applied
 
     return safe_minus(remove_absorption(fd,att,def->skill(Skill::counter) + att->m_enfeebled), att->protected_value());
 }
@@ -1943,7 +1979,12 @@ void PerformAttack::do_leech<CardType::assault>()
         }
 #endif
         _DEBUG_MSG(1, "%s leeches %u health\n", status_description(att_status).c_str(), leech_value);
-        att_status->add_hp(leech_value);
+        if (__builtin_expect(fd->fixes[Fix::leech_increase_max_hp],true)) {
+            att_status->ext_hp(leech_value);
+        }
+        else {
+            att_status->add_hp(leech_value);
+        }
     }
 }
 
@@ -2969,7 +3010,7 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
         }
 
         // check & apply skill to target(dst)
-        if (check_and_perform_skill<skill_id>(fd, src, dst, s, ! src->m_overloaded
+        if (check_and_perform_skill<skill_id>(fd, src, dst, s, ! (src->m_overloaded || (__builtin_expect(fd->fixes[Fix::dont_evade_mimic_selection],true) &&  skill_id == Skill::mimic))
 #ifndef NQUEST
                     , has_counted_quest
 #endif
