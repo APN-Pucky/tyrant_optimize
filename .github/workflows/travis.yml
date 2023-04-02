@@ -24,7 +24,6 @@ jobs:
           path: |
             *.exe
             *.zip
-
       - name: Create Release
         if: contains(github.ref, 'tags/v')
         id: create_release
