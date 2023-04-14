@@ -52,3 +52,5 @@ CMakeCache.txt
 ml/dist
 ml/tuo_ml/__pycache__
 ml/tuo_ml/*.pmml
+
+database.yml
