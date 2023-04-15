@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.4.0] - 2023-04-14
 
-- Updated strict-db to discard the database. This is now the default behavior for tuo. 
-- Added no-strict-db to disable default 
+- Updated `strict-db` to discard the database. This is now the default behavior for tuo. 
+- Added `no-strict-db` to disable default 
 
 ## [6.3.1] - 2024-04-11
 
