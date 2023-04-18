@@ -55,3 +55,6 @@ A list of available flags is [here](https://github.com/APN-Pucky/tyrant_optimize
 [OLD TUO](https://www.kongregate.com/forums/2468-general/topics/618298-sim-tyrant-unleashed-optimizer-neon-genesis)
 
 [OLDER TUO](http://www.kongregate.com/forums/2468-general/topics/426677-sim-tyrant-unleashed-optimizer)
+
+
+testing jira
