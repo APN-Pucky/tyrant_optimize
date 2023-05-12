@@ -468,9 +468,24 @@
     <id>23</id>
     <name>Mesmerize Raid</name>
     <commander>25336</commander>
-    <fortress_card id="17858"/>
-    <fortress_card id="17848"/>
     <levels>26</levels>
+    <fortress_pool amount="2">
+      <card replicates="1">17828</card>
+      <card replicates="1">17838</card>
+      <card replicates="1">17848</card>
+      <card replicates="1">17858</card>
+      <card replicates="1">17868</card>
+      <card replicates="1">17878</card>
+      <card replicates="1">17888</card>
+      <card replicates="1">17898</card>
+      <card replicates="1">17908</card>
+      <card replicates="1">17918</card>
+      <card replicates="1">17928</card>
+      <card replicates="1">17938</card>
+      <card replicates="1">17948</card>
+      <card replicates="1">17958</card>
+      <card replicates="1">17968</card>
+    </fortress_pool>
     <deck>
       <always_include>
         <card replicates="2">43238</card>
