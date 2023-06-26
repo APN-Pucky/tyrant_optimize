@@ -23,7 +23,6 @@ void perform_mark(Field* fd, CardStatus* att_status, CardStatus* def_status);
 void perform_berserk(Field* fd, CardStatus* att_status, CardStatus* def_status);
 template<enum CardType::CardType def_cardtype>
 void perform_counter(Field* fd, CardStatus* att_status, CardStatus* def_status);
-void perform_drain(Field* fd, CardStatus* att_status, CardStatus* def_status, unsigned att_dmg);
 void perform_hunt(Field* fd, CardStatus* att_status, CardStatus* def_status);
 void perform_subdue(Field* fd, CardStatus* att_status, CardStatus* def_status);
 bool check_and_perform_valor(Field* fd, CardStatus* src);
@@ -1642,7 +1641,7 @@ struct PerformAttack
 
             // Bug fix? 2023-04-03 drain now part of the PerformAttack.op() instead of attack_phase, like hunt.
             // perform swipe/drain
-            perform_drain(fd, att_status, def_status, att_dmg);
+            perform_swipe_drain<def_cardtype>(fd, att_status, def_status, att_dmg);
 
             if (is_alive(att_status) && att_dmg) {
                 perform_berserk(fd, att_status, def_status);
@@ -1882,7 +1881,11 @@ struct PerformAttack
 
     template<enum CardType::CardType>
         void do_leech() {}
-};
+
+    template<enum CardType::CardType>
+        void perform_swipe_drain(Field* fd, CardStatus* att_status, CardStatus* def_status,unsigned att_dmg) {}
+    };
+
 
     template<>
 void PerformAttack::attack_damage<CardType::commander>()
@@ -1930,6 +1933,7 @@ void PerformAttack::damage_dependant_pre_oa<CardType::assault>()
         }
     }
 }
+
 
     template<>
 void PerformAttack::do_leech<CardType::assault>()
@@ -2789,7 +2793,8 @@ bool check_and_perform_later_enhance(Field* fd, CardStatus* src)
  * @param def_status Defender status
  * @param att_dmg damage dealt by attacker
  */
-void perform_drain(Field* fd, CardStatus* att_status, CardStatus* def_status,unsigned att_dmg) {
+template<>
+void PerformAttack::perform_swipe_drain<CardType::assault>(Field* fd, CardStatus* att_status, CardStatus* def_status,unsigned att_dmg) {
         unsigned swipe_value = att_status->skill(Skill::swipe);
         unsigned drain_value = att_status->skill(Skill::drain);
         if (swipe_value || drain_value)
@@ -2806,6 +2811,7 @@ void perform_drain(Field* fd, CardStatus* att_status, CardStatus* def_status,uns
                 if (from_idx == host_idx) { continue; }
                 CardStatus* adj_status = &def_assaults[from_idx];
                 if (!is_alive(adj_status)) { continue; }
+                _DEBUG_ASSERT(adj_status->m_card->m_type == CardType::assault); //only assaults
                 //unsigned swipe_dmg = safe_minus(
                 //    swipe_value + drain_value + def_status->m_enfeebled,
                 //    def_status->protected_value());
