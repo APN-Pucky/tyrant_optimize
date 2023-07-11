@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.5.0] - 2023-07-11
 
-- Updated Subdue skill now cancels an attack, if subdue reduces the attack to 0 
+- Updated Subdue skill now cancels an attack, if subdue reduces the attack to 0
 - Update corrosive skill
 - Added options `update-corrosive-protect-armor` and `no-update-corrosive-protect-armor` to toggle new behaviour (default: updated)
 

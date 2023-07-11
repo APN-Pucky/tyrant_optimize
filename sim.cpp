@@ -1608,6 +1608,7 @@ struct PerformAttack
         {
             unsigned pre_modifier_dmg = att_status->attack_power();
             // Bug fix? 2023-04-03 a card with zero attack power can not attack and won't trigger subdue
+            // Confirmed subdue behaviour by MK 2023-07-12
             if(pre_modifier_dmg == 0) { return 0; }
 
 
