@@ -4085,6 +4085,8 @@ DeckResults run(int argc, const char **argv)
 
     auto your_deck = your_decks[0];
 
+    if (!opt_todo.empty())
+    {
     auto op = opt_todo.back();
     // for (auto op: opt_todo)
     {
@@ -4211,6 +4213,10 @@ DeckResults run(int argc, const char **argv)
         }
     }
     write_db(prefix);
+    }
+    else {
+        std::cout << "No operation specified" << std::endl;
+    }
     return fr;
 }
 
