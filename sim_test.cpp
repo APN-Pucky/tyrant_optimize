@@ -57,7 +57,7 @@ std::ostream &operator<<(std::ostream &os, const TestInfo &ti)
     return os << "Your Deck: " << ti.your_deck << "; Enemy Deck: " << ti.enemy_deck << "; BGE: " << ti.bge;
 }
 
-inline Result run_sim(int argc, const char **argv, bool pipe_output = false)
+inline Result run_sim(int argc, const char **argv, bool pipe_output = true)
 {
     Result res;
     std::string rdeck = "";
