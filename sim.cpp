@@ -1435,6 +1435,8 @@ void turn_end_phase(Field* fd)
             {
                 continue;
             }
+            // reset the structure's (barrier) protect
+            status.m_protected = 0;
             status.m_evaded = 0;  // so far only useful in Inactive turn
         }
     }
@@ -2290,12 +2292,24 @@ inline void perform_skill<Skill::fortify>(Field* fd, CardStatus* src, CardStatus
 {
     dst->ext_hp(s.x);
 }
+
+    template<>
+inline void perform_skill<Skill::siege>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
+{
+    _DEBUG_ASSERT(dst->m_card->m_type != CardType::assault); //only assaults
+    _DEBUG_ASSERT(dst->m_card->m_type != CardType::commander); //only assaults
+    unsigned siege_dmg = remove_absorption(fd,dst,s.x);
+    // structure should not have protect normally..., but let's allow it for barrier support
+    siege_dmg = safe_minus(siege_dmg, src->m_overloaded ? 0 : dst->protected_value());
+    remove_hp(fd, dst, siege_dmg);
+}
+
     template<>
 inline void perform_skill<Skill::mortar>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
 {
     if (dst->m_card->m_type == CardType::structure)
     {
-        remove_hp(fd, dst, remove_absorption(fd,dst,s.x));
+        perform_skill<Skill::siege>(fd, src, dst, s);
     }
     else
     {
@@ -2354,12 +2368,6 @@ inline void perform_skill<Skill::rush>(Field* fd, CardStatus* src, CardStatus* d
         check_and_perform_valor(fd, dst);
         if(dst->m_card->m_skill_trigger[Skill::summon] == Skill::Trigger::activate)check_and_perform_summon(fd, dst);
     }
-}
-
-    template<>
-inline void perform_skill<Skill::siege>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
-{
-    remove_hp(fd, dst, remove_absorption(fd,dst,s.x));
 }
 
     template<>
