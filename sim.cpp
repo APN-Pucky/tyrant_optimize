@@ -2301,7 +2301,7 @@ inline void perform_skill<Skill::siege>(Field* fd, CardStatus* src, CardStatus* 
     _DEBUG_ASSERT(dst->m_card->m_type != CardType::commander);
     unsigned siege_dmg = remove_absorption(fd,dst,s.x);
     // structure should not have protect normally..., but let's allow it for barrier support
-    siege_dmg = safe_minus(siege_dmg, src->m_overloaded ? 0 : dst->protected_value());
+    siege_dmg = safe_minus(siege_dmg, src->m_overloaded ? 0 : dst->m_protected);
     remove_hp(fd, dst, siege_dmg);
 }
 
