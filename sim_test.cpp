@@ -57,8 +57,9 @@ std::ostream &operator<<(std::ostream &os, const TestInfo &ti)
     return os << "Your Deck: " << ti.your_deck << "; Enemy Deck: " << ti.enemy_deck << "; BGE: " << ti.bge;
 }
 
-inline Result run_sim(int argc, const char **argv, bool pipe_output = true)
+inline Result run_sim(int argc, const char **argv, bool pipe_output = false)
 {
+    init();
     Result res;
     std::string rdeck = "";
     FinalResults<long double> fr;
@@ -168,7 +169,7 @@ inline double time_db_sim(std::string gnt1, std::string gnt2)
     s = std::to_string(seed);
     char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
-    const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/db/", "db", "no-db-load"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
+    const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/db/", "no-db-load"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
     Result result(run_sim(sizeof(argv) / sizeof(*argv), argv));
     delete[] ii;
@@ -517,8 +518,9 @@ BOOST_AUTO_TEST_CASE(test_db_init)
 BOOST_AUTO_TEST_SUITE(test_db_scaling)
 BOOST_AUTO_TEST_CASE(test_db_scaling)
 {
-    auto t1 = time_db_sim("Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6, ", "Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6,");
-    auto t2 =     time_db("Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6, ", "Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6,");
+    BOOST_TEST_MESSAGE("DB time improvement test");
+    auto t1 = time_db_sim("Sir Alaric the Swift-1, Broodmother's Nexus-1, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6, ", "Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6,");
+    auto t2 =     time_db("Sir Alaric the Swift-1, Broodmother's Nexus-1, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6, ", "Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6,");
     BOOST_CHECK_MESSAGE(t1 > t2, "DB time improvement failed: " + std::to_string(t1) + " > " + std::to_string(t2));
 }
 BOOST_AUTO_TEST_SUITE_END()
