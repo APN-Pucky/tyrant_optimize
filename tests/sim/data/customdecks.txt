@@ -29,12 +29,12 @@ Bug62_5: Insurgent Malika,Alpha Retainer,Exarch's Wisp, Delphi of the Pantheon,S
 
 Bug66: /^Bug66_\d+$/
 Bug66_01: Vyander Hazix, Alpha Retainer, Haunted Incarnation, Flak Fusillade, Pillars of Cyprion, Ku Kaili Moku, Buckle Clanger, Nautical Carrier
-Bug66_02: Octane Optimized, Broodmother's Nexus, Orbo the Holy City, Barracus Redeemed, Orbo the Unstoppable, Orbo, Orbo Replica, Gilian Shardkeeper
+Bug66_02: Octane Optimized, Broodmother's Nexus, Orbo the Holy City, Barracus Redeemed, Orbo the Unstopable, Orbo, Gilian Shardkeeper
 Bug66_03: Broodmother Queen, Delphinian Pilgrim, Lithid Vizier, Noxious Tank, Insanitius, Inferno Demon, Worldformer, Ruin Crawler, Sulfuris Cascade
 Bug66_04: Ulgor Nerve-splicer, Boneshaper Nemesis#2, Alecto Furious-6#2,Vyander Hazix, Plutonium Ravager, Plague of Euclid,Hazard Krux
-Bug66_05: Sepulchre of Talos, Conclave Manufactory, Concilor Constantine, Relic Spelunker#5, Acolyte Immortal#2
+Bug66_05: Sepulchre of Talos, Conclave Manufactory, Cassius the Centurion, Relic Spelunker#5, Acolyte Immoral#2
 Bug66_06: Petrisis Gorefist, Calix the Clever#2, Remote Rig, Mausoleum Tenet, Bio Equalizer, Arcadia Redeemed, Scar Mesher
-Bug66_07: Insurgent Malika,Alpha Retainer, Necropocalypse, Hylas Adroit, Avarice, Towerbreaker, Galvanic Commando, Magistrate, Irrian Grafter, Trench Hurler,  Leviathan
+Bug66_07: Insurgent Malika,Alpha Retainer, Necropocalypse, Hylas Adroit, Avarice, Towerbreaker, Galvanic Commando, Magistrate, Irrian Grafter, Trench Hurler, Leviathan
 
 
 Bug67: /^Bug67_\d+$/
