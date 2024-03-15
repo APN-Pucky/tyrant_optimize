@@ -42,10 +42,10 @@ std::list<std::string> get_abbreviations(const std::string& name)
 Cards::~Cards()
 {
     //for (Card* c: all_cards) { delete(c); }
-    reset();
+    clear();
 }
 
-void Cards::reset()
+void Cards::clear()
 {
     for (Card* c: all_cards) { delete(c); }
     all_cards.clear();

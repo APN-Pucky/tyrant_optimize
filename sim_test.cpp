@@ -57,13 +57,12 @@ std::ostream &operator<<(std::ostream &os, const TestInfo &ti)
     return os << "Your Deck: " << ti.your_deck << "; Enemy Deck: " << ti.enemy_deck << "; BGE: " << ti.bge;
 }
 
-inline Result run_sim(int argc, const char **argv, bool pipe_output = false)
+inline Result run_sim(int argc, const char **argv, bool pipe_output = true)
 {
     init();
     Result res;
     std::string rdeck = "";
     FinalResults<long double> fr;
-    debug_str.clear();
     //
 
     auto start_time = std::chrono::system_clock::now();
@@ -169,7 +168,7 @@ inline double time_db_sim(std::string gnt1, std::string gnt2)
     s = std::to_string(seed);
     char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
-    const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/db/", "no-db-load"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
+    const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/db/", "db", "no-db-load"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
     Result result(run_sim(sizeof(argv) / sizeof(*argv), argv));
     delete[] ii;
@@ -514,6 +513,9 @@ BOOST_AUTO_TEST_SUITE(test_db)
 BOOST_AUTO_TEST_CASE(test_db_init)
 {
     iter = 100000;
+    debug_print = 0;
+    debug_cached = 0;
+    debug_line = false;
 }
 BOOST_AUTO_TEST_SUITE(test_db_scaling)
 BOOST_AUTO_TEST_CASE(test_db_scaling)
@@ -530,6 +532,9 @@ BOOST_AUTO_TEST_SUITE(test_ml)
 BOOST_AUTO_TEST_CASE(test_ml_init)
 {
     iter = 100000;
+    debug_print = 0;
+    debug_cached = 0;
+    debug_line = false;
 }
 BOOST_AUTO_TEST_SUITE(test_ml_scaling)
 BOOST_AUTO_TEST_CASE(test_ml_scaling)

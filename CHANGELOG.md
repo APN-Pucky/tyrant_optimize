@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `all="0"` in xmls is treated as no all attribute (#70)
 - structures now can have barrier (#71) 
 - test of db scaling did not write to db (#71)
+- memory leak in test runs (#71)
 
 ## [6.5.0] - 2023-07-11
 

@@ -176,7 +176,7 @@ void parse_card_node(Cards& all_cards, Card* card, xml_node<>* card_node)
     if (attack_node) { card->m_attack = atoi(attack_node->value()); 
 	    if(abs(1-atk_scale)>eps)
 		card->m_attack = ceil(card->m_attack/(atk_scale));
-}
+    }
     if (health_node) { card->m_health = atoi(health_node->value()); 
 	    if(abs(1-hp_scale)>eps)
 		card->m_health = ceil(card->m_health/(hp_scale));
@@ -299,11 +299,12 @@ void parse_card_node(Cards& all_cards, Card* card, xml_node<>* card_node)
     }
 
     if (card_node->first_node("skill"))
-    { // inherit no skill if there is skill node
+    { 
+        // inherit no skill if there is skill node
         card->m_skills.clear();
         card->m_skills_on_play.clear();
-	//APN
-	card->m_skills_on_attacked.clear();
+	    //APN
+	    card->m_skills_on_attacked.clear();
         card->m_skills_on_death.clear();
         memset(card->m_skill_value, 0, sizeof card->m_skill_value);
         memset(card->m_skill_trigger, 0, sizeof card->m_skill_trigger);

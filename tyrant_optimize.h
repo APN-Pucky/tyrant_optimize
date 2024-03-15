@@ -110,7 +110,6 @@ namespace tuo {
 
     // TUO5 db of results
     // map<hash of proc,ydeck edeck decks but also more,result>
-    //EXTERN std::map<std::string, Results<uint64_t>> database;
 	EXTERN std::map<std::string,std::map<std::string,std::map<std::string,Results<uint64_t>>>> database;
     EXTERN hpmml::Model win_model, loss_model, stall_model, points_model;
 

@@ -214,6 +214,11 @@ DeckEncoder encode_deck = encode_deck_ext_b64;
 
 namespace range = boost::range;
 
+Decks::~Decks()
+{
+	decks.clear();
+}
+
 void Deck::set(const std::vector<unsigned>& ids, const std::map<signed, char> &marks)
 {
 	commander = nullptr;
