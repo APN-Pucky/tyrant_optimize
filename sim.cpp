@@ -2295,9 +2295,10 @@ inline void perform_skill<Skill::fortify>(Field* fd, CardStatus* src, CardStatus
 
     template<>
 inline void perform_skill<Skill::siege>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
-{
-    _DEBUG_ASSERT(dst->m_card->m_type != CardType::assault); //only assaults
-    _DEBUG_ASSERT(dst->m_card->m_type != CardType::commander); //only assaults
+{ 
+    //only structures can be sieged
+    _DEBUG_ASSERT(dst->m_card->m_type != CardType::assault);
+    _DEBUG_ASSERT(dst->m_card->m_type != CardType::commander);
     unsigned siege_dmg = remove_absorption(fd,dst,s.x);
     // structure should not have protect normally..., but let's allow it for barrier support
     siege_dmg = safe_minus(siege_dmg, src->m_overloaded ? 0 : dst->protected_value());
