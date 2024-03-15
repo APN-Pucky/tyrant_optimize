@@ -268,6 +268,7 @@ void load_db(std::string prefix)
 {
     if (use_db_load)
     {
+        _DEBUG_MSG(0, "start loading db");
         // open file to read from
         std::ifstream file;
         file.open(prefix + "data/database.yml");
@@ -333,6 +334,7 @@ void load_db(std::string prefix)
         }
         // close file
         file.close();
+        _DEBUG_MSG(0, "done loading db");
     }
 }
 
@@ -341,6 +343,7 @@ void write_db(std::string prefix)
 {
     if (use_db_write)
     {
+        _DEBUG_MSG(0, "start writing to db");
         // open file to write to
         std::ofstream file;
         file.open(prefix + "data/database.yml");
@@ -365,6 +368,7 @@ void write_db(std::string prefix)
         }
         // close file
         file.close();
+        _DEBUG_MSG(0, "done writing to db");
     }
 }
 
