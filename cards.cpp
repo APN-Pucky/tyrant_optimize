@@ -47,7 +47,7 @@ Cards::~Cards()
 
 void Cards::reset()
 {
-    //for (Card* c: all_cards) { delete(c); }
+    for (Card* c: all_cards) { delete(c); }
     all_cards.clear();
     cards_by_id.clear();
     player_cards.clear();
