@@ -523,7 +523,7 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(test_db)
 BOOST_AUTO_TEST_CASE(test_db_init)
 {
-    iter = 10000;
+    iter = 100000;
 }
 BOOST_AUTO_TEST_SUITE(test_db_scaling)
 BOOST_AUTO_TEST_CASE(test_db_scaling)
