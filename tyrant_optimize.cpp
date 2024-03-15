@@ -459,9 +459,7 @@ void init()
     prefered_skills.clear();
     prefered_factor = 3;
 
-    for (Card *c : all_cards.all_cards)
-        delete c; // prevent memory leak
-    all_cards.visible_cardset.clear();
+    all_cards.reset();
 
     // fix defaults
     for (int i = 0; i < Fix::num_fixes; ++i)
@@ -3454,8 +3452,9 @@ DeckResults run(int argc, const char **argv)
     opt_num_threads = omp_get_max_threads();
 #endif
     // TODO delete ? since prefix/suffix might change we reload all cards.
-    // if(all_cards.all_cards.size()>0) delete(&all_cards); // complains invalid pointer
-    // all_cards.organize();
+    all_cards.reset();
+    //if(all_cards.all_cards.size()>0) delete(&all_cards);
+    //all_cards.organize();
     all_cards = Cards();
     Decks decks;
     std::unordered_map<std::string, std::string> bge_aliases;

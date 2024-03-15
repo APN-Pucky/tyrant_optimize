@@ -26,7 +26,7 @@ int iter = 1000;
 unsigned seed = 0;
 // limit for float diffing
 // disable
-double eps = 1;
+double eps = 1.;
 // enable
 // double eps = 0.0000001;
 
@@ -57,7 +57,7 @@ std::ostream &operator<<(std::ostream &os, const TestInfo &ti)
     return os << "Your Deck: " << ti.your_deck << "; Enemy Deck: " << ti.enemy_deck << "; BGE: " << ti.bge;
 }
 
-inline Result run_sim(int argc, const char **argv, bool pipe_output = true)
+inline Result run_sim(int argc, const char **argv, bool pipe_output = false)
 {
     Result res;
     std::string rdeck = "";
@@ -84,6 +84,7 @@ inline Result run_sim(int argc, const char **argv, bool pipe_output = true)
             param[argc] = const_cast<char *>("-t");
             param[argc + 1] = const_cast<char *>("1");
             auto rett = run(argc + 2, param);
+            delete[] param;
             fr = rett.second;
             // result to string
             auto drc = rett;
@@ -107,6 +108,7 @@ inline Result run_sim(int argc, const char **argv, bool pipe_output = true)
             param[argc] = const_cast<char *>("-t");
             param[argc + 1] = const_cast<char *>("1");
             auto rett = run(argc + 2, param);
+            delete[] param;
             fr = rett.second;
             // result to string
             auto drc = rett;
@@ -142,10 +144,10 @@ inline void check_win_sim(TestInfo ti)
     // Max. Iter == 100, else check_win fails with integer vs double equal in check_win
     ////////////
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     const char *argv[] = {"tuo", ti.your_deck.c_str(), ti.enemy_deck.c_str(), "-e", ti.bge.c_str(), "sim", ii, "seed", iii, "prefix", "tests/sim/"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
@@ -161,10 +163,10 @@ inline double time_db_sim(std::string gnt1, std::string gnt2)
     // Max. Iter == 100, else check_win fails with integer vs double equal in check_win
     ////////////
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/db/", "db", "no-db-load"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
@@ -181,10 +183,10 @@ inline double time_db(std::string gnt1, std::string gnt2)
     // Max. Iter == 100, else check_win fails with integer vs double equal in check_win
     ////////////
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/db/", "db"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
@@ -201,10 +203,10 @@ inline double time_ml_sim(std::string gnt1, std::string gnt2)
     // Max. Iter == 100, else check_win fails with integer vs double equal in check_win
     ////////////
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/ml/", "no-db-load"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
@@ -221,10 +223,10 @@ inline double time_ml(std::string gnt1, std::string gnt2)
     // Max. Iter == 100, else check_win fails with integer vs double equal in check_win
     ////////////
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/ml/", "no-db", "ml"}; // much output on error?! // better 100 iterations for test, 10 for checking errors
     // const char* argv[] = {"tuo",ti.your_deck.c_str(),ti.enemy_deck.c_str(),"-e",ti.bge.c_str(),"sim", ii,"seed", iii}; //much output on error?! // better 100 iterations for test, 10 for checking errors
@@ -239,7 +241,7 @@ inline double time_ml(std::string gnt1, std::string gnt2)
 inline void genetic(std::string gnt1, std::string gnt2)
 {
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     const char *argv[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "brawl", "genetic", ii};
     Result result(run_sim(sizeof(argv) / sizeof(*argv), argv, false));
@@ -252,10 +254,10 @@ inline void genetic(std::string gnt1, std::string gnt2)
 inline void check_algo(std::string gnt1, std::string gnt2, std::string algo)
 {
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     const char *argv1[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/algo/", "no-db"};
     Result result_sim(run_sim(sizeof(argv1) / sizeof(*argv1), argv1));
@@ -277,16 +279,16 @@ inline void check_anneal(std::string gnt1, std::string gnt2)
     double anneal_temp = 100;
     double anneal_temp_down = 0.01;
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     s = std::to_string(anneal_temp);
-    char *iv = new char[s.length()];
+    char *iv = new char[s.length()+1];
     strcpy(iv, s.c_str());
     s = std::to_string(anneal_temp_down);
-    char *v = new char[s.length()];
+    char *v = new char[s.length()+1];
     strcpy(v, s.c_str());
     const char *argv1[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/algo/", "no-db"};
     Result result_sim(run_sim(sizeof(argv1) / sizeof(*argv1), argv1));
@@ -308,13 +310,13 @@ inline void check_climbex(std::string gnt1, std::string gnt2)
     std::string algo = "climbex";
     int init = 10;
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     s = std::to_string(init);
-    char *iv = new char[s.length()];
+    char *iv = new char[s.length()+1];
     strcpy(iv, s.c_str());
     const char *argv1[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "prefix", "tests/algo/", "no-db"};
     Result result_sim(run_sim(sizeof(argv1) / sizeof(*argv1), argv1));
@@ -336,13 +338,13 @@ inline void check_climb_forts(std::string gnt1, std::string gnt2, std::string yf
     std::string algo = "climb_forts";
     int init = 10;
     string s = std::to_string(iter);
-    char *ii = new char[s.length()];
+    char *ii = new char[s.length()+1];
     strcpy(ii, s.c_str());
     s = std::to_string(seed);
-    char *iii = new char[s.length()];
+    char *iii = new char[s.length()+1];
     strcpy(iii, s.c_str());
     s = std::to_string(init);
-    char *iv = new char[s.length()];
+    char *iv = new char[s.length()+1];
     strcpy(iv, s.c_str());
     const char *argv1[] = {"tuo", gnt1.c_str(), gnt2.c_str(), "sim", ii, "seed", iii, "yf", yf.c_str(), "yfpool", "2", "ef", ef.c_str(), "efpool", "2", "prefix", "tests/algo/", "no-db"};
     Result result_sim(run_sim(sizeof(argv1) / sizeof(*argv1), argv1));
@@ -499,22 +501,9 @@ BOOST_DATA_TEST_CASE(test_whole_decks, bdata::make(read_test_file("tests/test_wh
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(test_crashes)
-BOOST_AUTO_TEST_CASE(test_crashes)
+BOOST_DATA_TEST_CASE(test_crashes, bdata::make(read_test_file("tests/test_crash.csv")), ti)
 {
     eps = 1.; // only check for crashes now
-    std::vector<std::vector<TestInfo>> aati;
-    // aati.emplace_back(read_test_file("tests/test_whole_decks.csv"));
-    // aati.emplace_back(read_test_file("tests/test_bges.csv"));
-    // aati.emplace_back(read_test_file("tests/test_multi_units.csv"));
-    aati.emplace_back(read_test_file("tests/test_crash.csv"));
-    std::string decks = "";
-    for (auto t = aati.begin(); t != aati.end(); ++t)
-        for (auto tt = t->begin(); tt != t->end(); ++tt)
-            decks += tt->your_deck + ";" + tt->enemy_deck + ";";
-    TestInfo ti;
-    ti.your_deck = decks;
-    ti.enemy_deck = decks;
-    ti.bge = "";
     check_win_sim(ti);
 }
 BOOST_AUTO_TEST_SUITE_END()

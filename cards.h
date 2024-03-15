@@ -24,6 +24,7 @@ public:
     std::unordered_set<unsigned> visible_cardset;
     std::unordered_set<std::string> ambiguous_names;
     const Card* by_id(unsigned id) const;
+    void reset();
     void organize();
     void fix_dominion_recipes();
     void add_card(Card* card, const std::string & name);

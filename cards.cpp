@@ -41,7 +41,21 @@ std::list<std::string> get_abbreviations(const std::string& name)
 //------------------------------------------------------------------------------
 Cards::~Cards()
 {
-    for (Card* c: all_cards) { delete(c); }
+    //for (Card* c: all_cards) { delete(c); }
+    reset();
+}
+
+void Cards::reset()
+{
+    //for (Card* c: all_cards) { delete(c); }
+    all_cards.clear();
+    cards_by_id.clear();
+    player_cards.clear();
+    cards_by_name.clear();
+    player_commanders.clear();
+    player_assaults.clear();
+    player_structures.clear();
+    visible_cardset.clear();
 }
 
 const Card* Cards::by_id(unsigned id) const
