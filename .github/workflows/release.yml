@@ -34,7 +34,7 @@ jobs:
       - run: ./update_xml.sh
       - run: source build/windows/package.sh
       - name: Upload tuo
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tuo
           path: |
