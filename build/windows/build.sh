@@ -10,6 +10,7 @@ MXE_DIR=/usr/lib/mxe
 declare -a a_openmp=("" "-openmp" )
 declare -a a_debug=("" "-debug" "-time")
 declare -a a_bit=("" "-x86" )
+declare -a a_quest=("" "-quest" )
 
 for omp in "${a_openmp[@]}"
 do
@@ -17,10 +18,12 @@ for dbg in "${a_debug[@]}"
 do
 for bit in "${a_bit[@]}"
 do
+for quest in "${a_quest[@]}"
+do
 
 DFLAGS=""
-BDIR="build-dir${bit}${omp}${dbg}"
-NAME="tuo${bit}${omp}${dbg}.exe"
+BDIR="build-dir${quest}${bit}${omp}${dbg}"
+NAME="tuo${quest}${bit}${omp}${dbg}.exe"
 
 if [ "$bit" = "" ]; then
 #Windows x64 Build
@@ -39,6 +42,9 @@ fi
 if [ "$omp" = "-openmp" ]; then
 DFLAGS="${DFLAGS} -DUSE_OPENMP=ON"
 fi
+if [ "$quest" = "" ]; then
+DFLAGS="${DFLAGS} -DNQUEST"
+fi
 #prep cmake
 ${MXE_DIR}/usr/bin/${MXE_TARGET}-cmake . -B${BDIR} -DVERSION:STRING="$(git describe --tags --abbrev=0 --dirty)${bit}${omp}${dbg}"  ${DFLAGS}
 
@@ -52,6 +58,7 @@ cmake --build ${BDIR}
 
 mv ${BDIR}/tuo.exe ${NAME}
 
+done
 done
 done
 done

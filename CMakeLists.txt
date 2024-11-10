@@ -14,7 +14,7 @@ set( BUILD_SHARED_LIBRARIES OFF)
 set( Boost_USE_STATIC_LIBS ON )
 set( CMAKE_EXE_LINKER_FLAGS "-static")
 endif()
-add_definitions(-DTYRANT_OPTIMIZER_VERSION="${VERSION}" ${DEBUG} -DNQUEST)
+add_definitions(-DTYRANT_OPTIMIZER_VERSION="${VERSION}" ${DEBUG})
 
 project(tuo)
 file(GLOB TUO_SOURCES "*.cpp")
