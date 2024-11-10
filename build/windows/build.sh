@@ -43,7 +43,9 @@ if [ "$omp" = "-openmp" ]; then
 DFLAGS="${DFLAGS} -DUSE_OPENMP=ON"
 fi
 if [ "$quest" = "" ]; then
-DFLAGS="${DFLAGS} -DNQUEST"
+DFLAGS="${DFLAGS} -DWITH_QUEST=OFF"
+else
+DFLAGS="${DFLAGS} -DWITH_QUEST=ON"
 fi
 #prep cmake
 ${MXE_DIR}/usr/bin/${MXE_TARGET}-cmake . -B${BDIR} -DVERSION:STRING="$(git describe --tags --abbrev=0 --dirty)${bit}${omp}${dbg}"  ${DFLAGS}

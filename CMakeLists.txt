@@ -16,6 +16,7 @@ set( CMAKE_EXE_LINKER_FLAGS "-static")
 endif()
 add_definitions(-DTYRANT_OPTIMIZER_VERSION="${VERSION}" ${DEBUG})
 
+
 project(tuo)
 file(GLOB TUO_SOURCES "*.cpp")
 
@@ -24,6 +25,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/extern/hPMML/include)
 enable_language(CXX)
 add_executable(tuo ${TUO_SOURCES})
 
+option(WITH_QUEST "With Quests enabled" OFF)
+if(NOT WITH_QUEST)
+add_definitions(-DNQUEST)
+endif()
 option(USE_OPENMP "Use OpenMP instead of Boost" OFF)
 if(USE_OPENMP)
 # src: https://stackoverflow.com/a/12404666
