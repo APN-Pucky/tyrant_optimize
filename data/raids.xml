@@ -708,6 +708,7 @@
     <levels>26</levels>
     <commander>25928</commander>
     <fortress_card id="18598"/>
+    <fortress_card id="19884"/>
     <deck>
       <always_include>
         <card replicates="3">58658</card>
