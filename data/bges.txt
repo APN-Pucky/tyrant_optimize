@@ -1,27 +1,36 @@
 // Guild War BGEs
-Artillery: Enhance Mortar 15; Mortar all 10
+Artillery: Enhance Mortar 20; Mortar all 18
 //Artillery: Mortar all 10
-Divine Blessing: Heal all 15; Rally all 15; Strike all 15
-Winter Tempest: Enhance all subdue 125; Protect All 15; Weaken All 15
+Divine Blessing: Heal all 20; Rally all 20; Strike all 20
+Winter Tempest: Enhance all subdue 150; Protect All 20; Weaken All 30
 //Winter Tempest: Protect All 15; Weaken All 15
-Charged Up: Overload all
-Progenitor Tech: Heal all 5; Protect all 5; Rally all 5; Enfeeble all 5; Strike all 5; Weaken all 5
-Plasma Burst: Heal all 10; Protect all 10; Sunder 10
-Tartarian Gift: Rally all 15; Enrage all 15
-Combined Arms: Enhance All Coalition 10; Rally all 10; Enfeeble all 10; Strike all 10
+Charged Up: Overload all; Rally all 14; Strike all 15
+Progenitor Tech: Heal all 8; Protect all 8; Rally all 8; Enfeeble all 8; Strike all 8; Weaken all 8
+Plasma Burst: Heal all 25; Protect all 25; Sunder 25
+Tartarian Gift: Rally all 25; Enrage all 25
+Combined Arms: Enhance All Coalition 15; Rally all 15; Enfeeble all 12; Strike all 12
 //Combined Arms: Rally all 10; Enfeeble all 10; Strike all 10
-Inspired: Rally all 25
-Blightblast: Enfeeble all 35
-Emergency Aid: Heal All 10; Protect all 10; Enhance all Absorb 125
-Landmine: Entrap all 25; Weaken all 25
-Triage: Enhance all Fortify 35; Heal 25; Protect 25
+Inspired: Rally all 32
+Blightblast: Enfeeble all 30
+Emergency Aid: Enhance all Absorb 200; Heal All 30; Protect all 30
+Landmine: Entrap all 50; Weaken all 45
+Triage: Enhance all Fortify 70; Heal 45; Protect 45
 //Triage: Heal 25; Protect 25
-Mirror Madness: Mimic 85; Entrap all 15
-Surgical Strike: Mortar 20; Strike 25; Weaken 25
-Apocalypse: Mortar all 10; Enfeeble all 10; Strike all 10
-Minor Setback: Weaken 25; Strike 25; Mimic 25
-Entrapment: Enhance all Counter 50; Entrap 10; Heal 10
+Mirror Madness: Entrap all 25; Mimic 85
+Surgical Strike: Mortar 35; Strike 25; Weaken 35
+Apocalypse: Mortar all 12; Enfeeble all 12; Strike all 12
+Minor Setback: Weaken 50; Strike 50; Mimic 60
+Entrapment: Enhance all Counter 70; Entrap 70; Heal 60
 //Entrapment: Entrap 10; Heal 10
+
+// New GBGEs
+
+// Vengeance set of GBGEs
+Vengeance Brewing: Entrap all 5; Enrage all 5
+Vengeance Rising: Entrap all 10; Enrage all 10
+Vengeance Overflowing: Entrap all 15; Enrage all 15
+Vengeance Unleashed: Entrap all 20; Enrage all 25
+
 
 // Weird BGEs we will never ever see again
 Sulfuris Essence: Evolve All Poison Venom; Enhance All Venom 6
