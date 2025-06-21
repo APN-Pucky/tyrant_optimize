@@ -9,6 +9,9 @@ jobs:
     container:
       image: ubuntu:20.04  # Use older Ubuntu version
 
+    env:
+      DEBIAN_FRONTEND: noninteractive
+
     steps:
       - name: Install Git
         run: |
