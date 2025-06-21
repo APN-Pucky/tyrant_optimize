@@ -27,7 +27,7 @@ jobs:
       - run: "./build/windows/requirements.sh"
       - run: "./build/windows/build.sh"
       - run: ./update_xml.sh
-      - run: source build/windows/package.sh
+      - run: . build/windows/package.sh
 
       - name: Upload tuo
         uses: actions/upload-artifact@v4
