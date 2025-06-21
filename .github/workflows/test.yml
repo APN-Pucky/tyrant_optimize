@@ -22,7 +22,7 @@ jobs:
       run: ./tuo-test --log_level=message
     - name: lcov
       run: |
-       lcov -b . -d . -o coverage.output --capture --ignore-errors inconsistent --ignore-errors mismatch
+       lcov -b . -d . -o coverage.output --capture --ignore-errors inconsistent --ignore-errors mismatch --ignore-errors unused
        lcov --remove coverage.output '/usr/include/*' './include/*' '*/extern/*' '*rapidxml.hpp*' '/usr/lib/*' -o coverage.output
     - name: Coveralls
       uses: coverallsapp/github-action@master
