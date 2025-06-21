@@ -19,6 +19,8 @@ jobs:
         run: |
           apt-get update
           apt-get install -y git sudo
+          ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
+          echo "Etc/UTC" > /etc/timezone
       - uses: actions/checkout@v4
         with:
           submodules: recursive
