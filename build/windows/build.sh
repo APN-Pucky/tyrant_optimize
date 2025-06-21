@@ -4,7 +4,7 @@ set -xue
 
 #Linux Build
 #make all
-MXE_DIR=
+MXE_DIR=/usr/lib/mxe
 
 
 declare -a a_openmp=("" "-openmp" )
@@ -27,11 +27,11 @@ NAME="tuo${quest}${bit}${omp}${dbg}.exe"
 
 if [ "$bit" = "" ]; then
 #Windows x64 Build
-DFLAGS="${DFLAGS} -DCMAKE_TOOLCHAIN_FILE=build/windows/mingw64-toolchain.cmake"
+MXE_TARGET=x86_64-w64-mingw32.static
 fi
 if [ "$bit" = "-x86" ]; then
 #Windows x86 Build
-DFLAGS="${DFLAGS} -DCMAKE_TOOLCHAIN_FILE=build/windows/mingw32-toolchain.cmake"
+MXE_TARGET=i686-w64-mingw32.static
 fi
 
 #No windows timer on default
@@ -48,7 +48,7 @@ else
 DFLAGS="${DFLAGS} -DWITH_QUEST=ON"
 fi
 #prep cmake
-cmake . -B${BDIR} -DVERSION:STRING="$(git describe --tags --abbrev=0 --dirty)${bit}${omp}${dbg}"  ${DFLAGS}
+${MXE_DIR}/usr/bin/${MXE_TARGET}-cmake . -B${BDIR} -DVERSION:STRING="$(git describe --tags --abbrev=0 --dirty)${bit}${omp}${dbg}"  ${DFLAGS}
 
 #cmake sets dndebug by default => remove that
 if [ "$dbg" = "-debug" ]; then

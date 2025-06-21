@@ -5,7 +5,11 @@ set -xue
 sudo apt-get update
 sudo apt-get install libssl-dev
 
-sudo apt-get install g++-mingw-w64-x86-64 gcc-mingw-w64-x86-64 gcc-mingw-w64-i686-win32 g++-mingw-w64-i686-win32
+sudo apt-key adv \
+    --keyserver keyserver.ubuntu.com \
+    --recv-keys 86B72ED9 && \
+sudo add-apt-repository \
+    "deb [arch=amd64] https://pkg.mxe.cc/repos/apt `lsb_release -sc` main" && \
 
 
 sudo apt-get update
