@@ -9,6 +9,8 @@ jobs:
   build:
     name: ubuntu
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:20.04  # Use older Ubuntu version
 
     steps:
       - uses: actions/checkout@v4
