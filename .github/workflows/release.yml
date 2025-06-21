@@ -13,10 +13,10 @@ jobs:
       image: ubuntu:20.04  # Use older Ubuntu version
 
     steps:
-      - name: Install Git
+      - name: Install Tools
         run: |
           apt-get update
-          apt-get install -y git
+          apt-get install -y git sudo
       - uses: actions/checkout@v4
         with:
           submodules: recursive
