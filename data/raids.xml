@@ -468,24 +468,9 @@
     <id>23</id>
     <name>Mesmerize Raid</name>
     <commander>25336</commander>
+    <fortress_card id="17858"/>
+    <fortress_card id="17848"/>
     <levels>26</levels>
-    <fortress_pool amount="2">
-      <card replicates="1">17828</card>
-      <card replicates="1">17838</card>
-      <card replicates="1">17848</card>
-      <card replicates="1">17858</card>
-      <card replicates="1">17868</card>
-      <card replicates="1">17878</card>
-      <card replicates="1">17888</card>
-      <card replicates="1">17898</card>
-      <card replicates="1">17908</card>
-      <card replicates="1">17918</card>
-      <card replicates="1">17928</card>
-      <card replicates="1">17938</card>
-      <card replicates="1">17948</card>
-      <card replicates="1">17958</card>
-      <card replicates="1">17968</card>
-    </fortress_pool>
     <deck>
       <always_include>
         <card replicates="2">43238</card>
@@ -708,7 +693,6 @@
     <levels>26</levels>
     <commander>25928</commander>
     <fortress_card id="18598"/>
-    <fortress_card id="19884"/>
     <deck>
       <always_include>
         <card replicates="3">58658</card>
@@ -739,26 +723,18 @@
     <levels>26</levels>
     <commander>25996</commander>
     <effects>
-      <skill id="overload" all="1"/>
-      <skill id="rally" all="1" x=".65"/>
-      <skill id="protect" all="1" x=".55"/>
-      <skill id="enfeeble" all="1" x=".45"/>
-      <skill id="weaken" all="1" x="1.35"/>
+		<skill id="overload" all="1"/>
+		<skill id="rally" x="5" all="1"/>
+		<skill id="protect" x="10" all="1"/>
+		<skill id="enfeeble" x="5" all="1"/>
+		<skill id="weaken" x="10" all="1"/>
     </effects>
     <deck>
-      <always_include>
-        <card>59986</card>
-        <card>59996</card>
-        <card>60006</card>
-        <card>60016</card>
-        <card>60026</card>
-        <card>60036</card>
-      </always_include>
-      <card_pool amount="4">
+      <card_pool amount="10">
         <card replicates="2">59986</card>
-        <card replicates="2">59996</card>
-        <card replicates="2">60006</card>
-        <card replicates="2">60016</card>
+        <card replicates="3">59996</card>
+        <card replicates="3">60006</card>
+        <card replicates="1">60016</card>
         <card replicates="2">60026</card>
         <card replicates="2">60036</card>
       </card_pool>
@@ -961,29 +937,6 @@
 			<card replicates="1">64714</card><!--Perfected Tarantalus-->
 			<card replicates="1">64724</card><!--Perfected Salg-->
 		</card_pool>
-		</deck>
-	</raid>
-    <raid>
-		<id>115</id>
-		<name>Orbocalypse Raid</name>
-		<levels>26</levels>
-		<commander>26602</commander>	<!-- Orbo Commander -->
-		<fortress_card id="19436"/> 	<!-- Orbodrive -->
-		<fortress_card id="19446"/> 	<!-- Orbopolis -->
-		<fortress_card id="19456"/> 	<!-- Orboloader -->
-		<fortress_card id="19466"/> 	<!-- Orbarricade -->
-		<fortress_card id="19476"/> 	<!-- Orbocloner -->
-		<fortress_card id="19486"/> 	<!-- Orbolauncher -->
-		<fortress_card id="19496"/> 	<!-- MirrOrbo -->
-		<fortress_card id="19506"/> 	<!-- Orbolifter -->
-		<fortress_card id="19516"/> 	<!-- Orbotaliator -->
-		<fortress_card id="19526"/> 	<!-- Orbamboozler -->
-		<deck>
-			<always_include>
-				<card replicates="7">58572</card>	<!-- Orbo (rare) -->
-				<card replicates="2">58573</card>	<!-- Orbo (mythic) -->
-				<card replicates="1">68466</card>	<!-- Orbo the Vengeful -->
-			</always_include>
 		</deck>
 	</raid>
   <!-- END of Raids -->
