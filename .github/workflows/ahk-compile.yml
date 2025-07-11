@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '**.ahk'
+      - .github/workflows/ahk-compile.yml
   workflow_dispatch:
 
 jobs:
