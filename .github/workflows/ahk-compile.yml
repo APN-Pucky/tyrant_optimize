@@ -28,9 +28,11 @@ jobs:
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: SimpleTUOLiveSim.exe
+          name: SimpleTUOLiveSim
+          path: SimpleTUOLiveSim.exe
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
-          name: SimpleTUOptimizeStarter.exe
+          name: SimpleTUOptimizeStarter
+          path: SimpleTUOptimizeStarter.exe
