@@ -49,6 +49,8 @@ jobs:
         if (Test-Path $output) {
           Write-Host "Compilation succeeded: $output"
         } else {
+          Write-Host "Compilation failed, listing files in the current directory:"
+          Get-ChildItem -Path . | ForEach-Object { Write-Host $_.FullName }
           Write-Error "Compilation failed, no output file created."
           exit 1
         }
