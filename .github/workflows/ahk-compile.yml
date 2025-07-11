@@ -30,6 +30,8 @@ jobs:
 
     - name: Compile AHK script
       run: |
+        Get-ChildItem -Path . -Filter "*.exe" | Remove-Item -Force
+
         $compiler = "AHK\Compiler\Ahk2Exe.exe"
         $input = "SimpleTUOptimizeStarter.ahk"
         $output = "newSimpleTUOptimizeStarter.exe"
