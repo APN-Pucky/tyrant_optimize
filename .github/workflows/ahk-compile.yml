@@ -8,40 +8,19 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  Example:
+    name: Example
     runs-on: windows-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Set up AutoHotkey (download portable version)
-      run: |
-        Invoke-WebRequest -Uri https://www.autohotkey.com/download/ahk.zip -OutFile ahk.zip
-        Expand-Archive ahk.zip -DestinationPath AHK
+      - name: Ahk2Exe
+        uses: nekocodeX/GitHub-Action-Ahk2Exe@main
+        with:
+          in: SimpleTUOLiveSim.ahk
 
-    - name: Compile AHK script
-      run: |
-        $compiler = "AHK\Compiler\Ahk2Exe.exe"
-        $input = "SimpleTUOLiveSim.ahk"
-        $output = "newSimpleTUOLiveSim.exe"
-        & $compiler /in $input /out $output
-      shell: powershell
-
-    - name: Compile AHK script
-      run: |
-        AHK\Compiler\Ahk2Exe.exe /in SimpleTUOptimizeStarter.ahk /out newSimpleTUOptimizeStarter.exe
-
-      shell: powershell
-
-    - name: Upload compiled EXE
-      uses: actions/upload-artifact@v4
-      with:
-        name: compiled-exe
-        path: newSimpleTUOptimizeStarter.exe
-
-    - name: Upload compiled EXE
-      uses: actions/upload-artifact@v4
-      with:
-        name: compiled-live-exe
-        path: newSimpleTUOLiveSim.exe
+      - name: Upload EXE
+        uses: actions/upload-artifact@v2
+        with:
+          name: SimpleTUOLiveSim.exe
