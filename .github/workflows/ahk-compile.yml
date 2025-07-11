@@ -30,32 +30,7 @@ jobs:
 
     - name: Compile AHK script
       run: |
-        Get-ChildItem -Path . -Filter "*.exe" | Remove-Item -Force
-
-        $compiler = "AHK\Compiler\Ahk2Exe.exe"
-        $input = "SimpleTUOptimizeStarter.ahk"
-        $output = "newSimpleTUOptimizeStarter.exe"
-
-        if (-Not (Test-Path $compiler)) {
-          Write-Error "Compiler not found at $compiler"
-          exit 1
-        }
-        if (-Not (Test-Path $input)) {
-          Write-Error "AHK script not found at $input"
-          exit 1
-        }
-
-        Write-Host "Compiling $input to $output..."
-        & $compiler /in $input /out $output
-
-        if (Test-Path $output) {
-          Write-Host "Compilation succeeded: $output"
-        } else {
-          Write-Host "Compilation failed, listing files in the current directory:"
-          Get-ChildItem -Path . | ForEach-Object { Write-Host $_.FullName }
-          Write-Error "Compilation failed, no output file created."
-          exit 1
-        }
+        AHK\Compiler\Ahk2Exe.exe /in SimpleTUOptimizeStarter.ahk /out newSimpleTUOptimizeStarter.exe
 
       shell: powershell
 
