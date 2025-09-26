@@ -708,7 +708,6 @@
     <levels>26</levels>
     <commander>25928</commander>
     <fortress_card id="18598"/>
-    <fortress_card id="19884"/>
     <deck>
       <always_include>
         <card replicates="3">58658</card>
@@ -739,26 +738,18 @@
     <levels>26</levels>
     <commander>25996</commander>
     <effects>
-      <skill id="overload" all="1"/>
-      <skill id="rally" all="1" x=".65"/>
-      <skill id="protect" all="1" x=".55"/>
-      <skill id="enfeeble" all="1" x=".45"/>
-      <skill id="weaken" all="1" x="1.35"/>
+		<skill id="overload" all="1"/>
+		<skill id="rally" x="5" all="1"/>
+		<skill id="protect" x="10" all="1"/>
+		<skill id="enfeeble" x="5" all="1"/>
+		<skill id="weaken" x="10" all="1"/>
     </effects>
     <deck>
-      <always_include>
-        <card>59986</card>
-        <card>59996</card>
-        <card>60006</card>
-        <card>60016</card>
-        <card>60026</card>
-        <card>60036</card>
-      </always_include>
-      <card_pool amount="4">
+      <card_pool amount="10">
         <card replicates="2">59986</card>
-        <card replicates="2">59996</card>
-        <card replicates="2">60006</card>
-        <card replicates="2">60016</card>
+        <card replicates="3">59996</card>
+        <card replicates="3">60006</card>
+        <card replicates="1">60016</card>
         <card replicates="2">60026</card>
         <card replicates="2">60036</card>
       </card_pool>
@@ -954,7 +945,7 @@
 			<card replicates="2">64664</card><!--Petrisis' Crackshot-->
 			<card replicates="2">64674</card><!--Fleshcrafter's Husk-->
 			<card replicates="2">64684</card><!--Petrisis' Grafter-->
-			<!-- <card replicates="2">64694</card><!--Petrisis' Scion--> 
+			<!-- <card replicates="2">64694</card> --><!--Petrisis' Scion--> 
 
 			<!-- Mythics -->   
 			<card replicates="1">64704</card><!--Perfected Elemir-->

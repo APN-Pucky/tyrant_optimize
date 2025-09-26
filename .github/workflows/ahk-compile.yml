@@ -1,0 +1,38 @@
+name: Compile AHK to EXE
+
+on:
+  push:
+    paths:
+      - '**.ahk'
+      - .github/workflows/ahk-compile.yml
+  workflow_dispatch:
+
+jobs:
+  Example:
+    name: Example
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Ahk2Exe
+        uses: nekocodeX/GitHub-Action-Ahk2Exe@main
+        with:
+          in: SimpleTUOLiveSim.ahk
+
+      - name: Ahk2Exe
+        uses: nekocodeX/GitHub-Action-Ahk2Exe@main
+        with:
+          in: SimpleTUOptimizeStarter.ahk
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimpleTUOLiveSim
+          path: SimpleTUOLiveSim.exe
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: SimpleTUOptimizeStarter
+          path: SimpleTUOptimizeStarter.exe

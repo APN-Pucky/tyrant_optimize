@@ -315,13 +315,13 @@ Loop, %MaxCardsSections%
 	if (!DownloadCards(URL, CardsFile))
 		break
 }
-UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/merged/data/raids.xml, data\raids.xml
+UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/master/data/raids.xml, data\raids.xml
 if ErrorLevel
 {
     MsgBox, Error downloading raids.xml.
     had_error := true
 }
-UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/merged/data/bges.txt, data\bges.txt
+UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/master/data/bges.txt, data\bges.txt
 if ErrorLevel
 {
     MsgBox, Error downloading bges.txt.
@@ -366,13 +366,13 @@ Loop, %MaxCardsSections%
 	if (!DownloadCards(URL, CardsFile))
 		break
 }
-UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/merged/data/raids.xml, data\raids.xml
+UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/master/data/raids.xml, data\raids.xml
 if ErrorLevel
 {
     MsgBox, Error downloading raids.xml.
     had_error := true
 }
-UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/merged/data/bges.txt, data\bges.txt
+UrlDownloadToFile, *0 https://raw.githubusercontent.com/APN-Pucky/tyrant_optimize/master/data/bges.txt, data\bges.txt
 if ErrorLevel
 {
     MsgBox, Error downloading bges.txt.
