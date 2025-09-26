@@ -1,27 +1,27 @@
 // Guild War BGEs
-Artillery: Enhance Mortar 20; Mortar all 18
+Artillery: Enhance Mortar 10; Mortar all 10
 //Artillery: Mortar all 10
-Divine Blessing: Heal all 20; Rally all 20; Strike all 20
-Winter Tempest: Enhance all subdue 150; Protect All 20; Weaken All 30
-//Winter Tempest: Protect All 15; Weaken All 15
-Charged Up: Overload all; Rally all 14; Strike all 15
-Progenitor Tech: Heal all 8; Protect all 8; Rally all 8; Enfeeble all 8; Strike all 8; Weaken all 8
-Plasma Burst: Heal all 25; Protect all 25; Sunder 25
-Tartarian Gift: Rally all 25; Enrage all 25
-Combined Arms: Enhance All Coalition 15; Rally all 15; Enfeeble all 12; Strike all 12
-//Combined Arms: Rally all 10; Enfeeble all 10; Strike all 10
-Inspired: Rally all 32
-Blightblast: Enfeeble all 30
-Emergency Aid: Enhance all Absorb 200; Heal All 30; Protect all 30
-Landmine: Entrap all 50; Weaken all 45
-Triage: Enhance all Fortify 70; Heal 45; Protect 45
-//Triage: Heal 25; Protect 25
-Mirror Madness: Entrap all 25; Mimic 85
-Surgical Strike: Mortar 35; Strike 25; Weaken 35
-Apocalypse: Mortar all 12; Enfeeble all 12; Strike all 12
-Minor Setback: Weaken 50; Strike 50; Mimic 60
-Entrapment: Enhance all Counter 70; Entrap 70; Heal 60
-//Entrapment: Entrap 10; Heal 10
+Divine Blessing: Heal all 4; Rally all 3; Strike all 4
+Winter Tempest: Enhance all subdue 20; Protect All 10; Weaken All 10
+//Winter Tempest: Protect All 10; Weaken All 10
+Charged Up: Overload all; Rally all 3; Strike all 3
+Progenitor Tech: Heal all 1; Protect all 1; Rally all 1; Enfeeble all 1; Strike all 1; Weaken all 1
+Plasma Burst: Heal all 9; Protect all 9; Sunder 9
+Tartarian Gift: Rally all 8; Enrage all 8
+Combined Arms: Enhance All Coalition 2; Rally all 1; Enfeeble all 1; Strike all 2
+//Combined Arms: Rally all 1; Enfeeble all 2; Strike all 1
+Inspired: Rally all 12
+Blightblast: Enfeeble all 5
+Emergency Aid: Enhance all Absorb 20; Heal All 10; Protect all 10
+Landmine: Entrap all 12; Weaken all 12
+Triage: Enhance all Fortify 10; Heal 15; Protect 15
+//Triage: Heal 15; Protect 15
+Mirror Madness: Entrap all 10; Mimic 10
+Surgical Strike: Mortar 9; Strike 9; Weaken 9
+Apocalypse: Mortar all 2; Enfeeble all 1; Strike all 2
+Minor Setback: Weaken 8; Strike 8; Mimic 10
+Entrapment: Enhance all Counter 12; Entrap 12; Heal 12
+//Entrapment: Entrap 12; Heal 12
 
 // New GBGEs
 
