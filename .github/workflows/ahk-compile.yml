@@ -26,13 +26,13 @@ jobs:
           in: SimpleTUOptimizeStarter.ahk
 
       - name: Upload EXE
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: SimpleTUOLiveSim
           path: SimpleTUOLiveSim.exe
 
       - name: Upload EXE
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: SimpleTUOptimizeStarter
           path: SimpleTUOptimizeStarter.exe
