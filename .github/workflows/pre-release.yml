@@ -30,7 +30,7 @@ jobs:
       - run: . build/windows/package.sh
 
       - name: Upload tuo
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: tuo
           path: |
