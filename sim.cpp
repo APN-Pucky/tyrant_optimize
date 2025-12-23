@@ -2098,6 +2098,7 @@ inline bool skill_predicate<Skill::enhance>(Field* fd, CardStatus* src, CardStat
     if (!dst->has_skill(s.s)) return false;
     if (is_active(dst)) return true;
     if (is_defensive_skill(s.s)) return true;
+    if (s.s == Skill::hunt || s.s == Skill::mark) return true; // Combat-Modifier exceptions (game bug?)
     if (is_instant_debuff_skill(s.s)) return true; // Enhance Sabotage, Inhibit, Disease also without dst being active
     if (is_triggered_skill(s.s) && s.s != Skill::valor) return true;// Enhance Allegiance, Stasis, Bravery ( + not in TU: Flurry, Summon; No enhance on inactive dst: Valor)
 
