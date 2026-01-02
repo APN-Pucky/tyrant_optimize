@@ -13,6 +13,7 @@
 #include <tuple>
 #include <boost/algorithm/string.hpp>
 #include <numeric>
+#include <iostream>
 
 #ifdef _MSC_VER
 #define __builtin_expect(x, y) (x)
@@ -462,13 +463,21 @@ inline uint8_t byte_bits_count(uint8_t i)
     i = (i & 0x33) + ((i >> 2) & 0x33);
     return (i + (i >> 4)) & 0x0F;
 }
+template <typename T, typename... Ts>
+inline void strap(const T& first, const Ts&... rest) {
+    std::cout << "@strap " << first;
+    ((std::cout << ' ' << rest), ...);
+    std::cout << std::endl << std::flush;
+}
 
 //---------------------- Debugging stuff ---------------------------------------
 extern signed debug_print;
 extern unsigned debug_cached;
 extern bool debug_line;
+extern bool debug_strap;
 extern std::string debug_str;
 #ifndef NDEBUG
+#define _DEBUG_STRAP(...) if(debug_strap)strap(__VA_ARGS__);
 #define _DEBUG_MSG(v, format, ...)                                  \
     {                                                                   \
         if(__builtin_expect(debug_print >= v, false))                   \
@@ -494,6 +503,7 @@ extern std::string debug_str;
     }
 #define _DEBUG_ASSERT(expr) { assert(expr); }
 #else
+#define _DEBUG_STRAP(...)
 #define _DEBUG_MSG(v, format, ...)
 #define _DEBUG_SELECTION(format, ...)
 #define _DEBUG_ASSERT(expr)

@@ -61,6 +61,12 @@ inline std::string status_description(const CardStatus* status)
     return status->description();
 }
 //------------------------------------------------------------------------------
+inline std::string strap_string(const CardStatus* status)
+{
+    // Replace ' ' with '_' for strap key
+    return boost::replace_all_copy(status->m_card->m_name, " ", "_");
+}
+//------------------------------------------------------------------------------
 template <typename CardsIter, typename Functor>
 inline unsigned Field::make_selection_array(CardsIter first, CardsIter last, Functor f)
 {
@@ -138,6 +144,14 @@ inline void Field::finalize_action()
         if (barrier_base)
         {
             unsigned protect_value = barrier_base * unit_it->second;
+            _DEBUG_STRAP(
+                    "turn", turn,
+                    "active_player", tapi,
+                    "barrier_"+strap_string(dmg_status), 1.0,
+                    "barrier_protect", protect_value,
+                    "barrier_base", barrier_base,
+                    "barrier_times", unit_it->second
+            );
             _DEBUG_MSG(1, "%s protects itself for %u (barrier %u x %u damage taken)\n",
                     status_description(dmg_status).c_str(), protect_value, barrier_base, unit_it->second);
             dmg_status->m_protected += protect_value;
@@ -566,6 +580,13 @@ void prepend_on_death(Field* fd, bool paybacked=false)
                 {
                     avenge_value = (avenge_value + 1) / 2;
                 }
+                _DEBUG_STRAP(
+                        "turn", fd->turn,
+                        "active_player", fd->tapi,
+                        "avenge_"+strap_string(adj_status), 1.0,
+                        "avenge_value", avenge_value,
+                        "avenge_half", (std::abs((signed)from_idx - (signed)host_idx) > 1 ? 1 : 0)
+                );
                 _DEBUG_MSG(1, "%s activates %sAvenge %u\n",
                         status_description(adj_status).c_str(),
                         (std::abs((signed)from_idx - (signed)host_idx) > 1 ? "Half-" : ""),
@@ -1891,6 +1912,13 @@ struct PerformAttack
                 if(!reduced_desc.empty()) { desc += "-[" + reduced_desc + "]"; }
                 if(!desc.empty()) { desc += "=" + tuo::to_string(att_dmg); }
                 else { assert(att_dmg == pre_modifier_dmg); }
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "attacker_"+strap_string(att_status), 1.0,
+                    "defender_"+strap_string(def_status), 1.0,
+                    "pre_modifier_dmg", pre_modifier_dmg
+                );
                 _DEBUG_MSG(1, "%s attacks %s for %u%s damage\n",
                         status_description(att_status).c_str(),
                         status_description(def_status).c_str(), pre_modifier_dmg, desc.c_str());
@@ -2634,6 +2662,14 @@ inline bool check_and_perform_skill(Field* fd, CardStatus* src, CardStatus* dst,
                     status_description(dst).c_str());
             return(false);
         }
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "skill_source_"+strap_string(src),
+            "skill_target_"+strap_string(dst),
+            "skill_"+skill_names[s.id],
+            "skill_x", s.x
+        );
         _DEBUG_MSG(1, "%s %s on %s\n",
                 status_description(src).c_str(), skill_short_description(fd->cards, s).c_str(),
                 status_description(dst).c_str());
@@ -2810,6 +2846,13 @@ void perform_counter(Field* fd, CardStatus* att_status, CardStatus* def_status)
                     fd->inc_counter(QuestType::skill_damage, Skill::counter, 0, counter_dmg);
                 }
 #endif
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "counter_attacker_"+strap_string(att_status), 1.0,
+                    "counter_defender_"+strap_string(def_status), 1.0,
+                    "counter_damage", counter_dmg
+                );
                 _DEBUG_MSG(1, "%s takes %u counter damage from %s\n",
                         status_description(att_status).c_str(), counter_dmg,
                         status_description(def_status).c_str());

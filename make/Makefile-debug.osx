@@ -11,7 +11,7 @@ ${warning "VERSION is not set (USING NO VERSION instead), use make VERSION=vX.XX
 endif
 endif
 
-CPPFLAGS := -Wall -Werror -std=c++14 -stdlib=libc++ -Ofast -g -I/usr/local/include -DTYRANT_OPTIMIZER_VERSION='"$(VERSION)--debug"'
+CPPFLAGS := -Wall -Werror -std=c++17 -stdlib=libc++ -Ofast -g -I/usr/local/include -DTYRANT_OPTIMIZER_VERSION='"$(VERSION)--debug"'
 LDFLAGS :=  -L/usr/local/lib -lboost_system-mt -lboost_thread-mt -lboost_filesystem-mt -lboost_regex-mt -lboost_timer-mt
 
 all: $(MAIN)
