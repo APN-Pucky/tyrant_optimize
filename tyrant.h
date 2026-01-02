@@ -457,16 +457,22 @@ std::string to_string(const T val)
     return s.str();
 }
 }
+
 inline uint8_t byte_bits_count(uint8_t i)
 {
     i = i - ((i >> 1) & 0x55);
     i = (i & 0x33) + ((i >> 2) & 0x33);
     return (i + (i >> 4)) & 0x0F;
 }
+
 template <typename T, typename... Ts>
 inline void strap(const T& first, const Ts&... rest) {
     std::cout << "@strap " << first;
-    ((std::cout << ' ' << rest), ...);
+    // Trick to expand the parameter pack without fold expressions
+    // same as: ((std::cout << ' ' << rest), ...);
+    // but that does not work unless >C++17
+    using expander = int[];
+    (void)expander{0, ((std::cout << ' ' << rest), 0)...};
     std::cout << std::endl << std::flush;
 }
 
