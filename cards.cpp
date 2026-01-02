@@ -118,7 +118,10 @@ void Cards::organize()
         {
             std::cerr << "WARNING: Card [" << card->m_id << "] (" << card->m_name
                 << ") summons an unknown card [" << summon_card_id << "] (removing invalid skill Summon)" << std::endl;
-            std::remove_if(card->m_skills.begin(), card->m_skills.end(), [](const SkillSpec& ss) {return ss.id == Skill::summon;});
+            card->m_skills.erase(
+                std::remove_if(card->m_skills.begin(), card->m_skills.end(), [](const SkillSpec& ss) {return ss.id == Skill::summon;}),
+                card->m_skills.end()
+            );
             card->m_skill_value[Skill::summon] = 0;
         }
     }
