@@ -2720,7 +2720,7 @@ inline bool check_and_perform_skill(Field* fd, CardStatus* src, CardStatus* dst,
                 "tribute_source_"+strap_string(dst),1.0,
                 "tribute_destination_"+strap_string(src),1.0,
                 "tribute_skill_"+skill_names[s.id],1.0,
-                "tribute_skill_x",s.x,
+                "tribute_skill_x",s.x
             );
             _DEBUG_MSG(1, "%s tributes %s back to %s\n",
                     status_description(dst).c_str(), skill_short_description(fd->cards, s).c_str(),
