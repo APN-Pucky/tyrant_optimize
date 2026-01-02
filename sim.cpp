@@ -61,6 +61,14 @@ inline std::string status_description(const CardStatus* status)
     return status->description();
 }
 //------------------------------------------------------------------------------
+inline std::string strap_string(const CardStatus* status)
+{
+    // Replace ' ' with '_' for strap key
+    std::string result = boost::replace_all_copy(status->m_card->m_name, " ", "_");
+    boost::replace_all(result, "'", "_");
+    return result;
+}
+//------------------------------------------------------------------------------
 template <typename CardsIter, typename Functor>
 inline unsigned Field::make_selection_array(CardsIter first, CardsIter last, Functor f)
 {
@@ -138,6 +146,14 @@ inline void Field::finalize_action()
         if (barrier_base)
         {
             unsigned protect_value = barrier_base * unit_it->second;
+            _DEBUG_STRAP(
+                    "turn", turn,
+                    "active_player", tapi,
+                    "barrier_"+strap_string(dmg_status), 1.0,
+                    "barrier_protect", protect_value,
+                    "barrier_base", barrier_base,
+                    "barrier_times", unit_it->second
+            );
             _DEBUG_MSG(1, "%s protects itself for %u (barrier %u x %u damage taken)\n",
                     status_description(dmg_status).c_str(), protect_value, barrier_base, unit_it->second);
             dmg_status->m_protected += protect_value;
@@ -566,6 +582,13 @@ void prepend_on_death(Field* fd, bool paybacked=false)
                 {
                     avenge_value = (avenge_value + 1) / 2;
                 }
+                _DEBUG_STRAP(
+                        "turn", fd->turn,
+                        "active_player", fd->tapi,
+                        "avenge_"+strap_string(adj_status), 1.0,
+                        "avenge_value", avenge_value,
+                        "avenge_half", (std::abs((signed)from_idx - (signed)host_idx) > 1 ? 1 : 0)
+                );
                 _DEBUG_MSG(1, "%s activates %sAvenge %u\n",
                         status_description(adj_status).c_str(),
                         (std::abs((signed)from_idx - (signed)host_idx) > 1 ? "Half-" : ""),
@@ -799,6 +822,12 @@ void evaluate_skills(Field* fd, CardStatus* status, const std::vector<SkillSpec>
                 fd->inc_counter(QuestType::skill_use, Skill::flurry);
             }
 #endif
+            _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "flurry_"+strap_string(status), 1.0,
+                    "flurry_count", status->skill_base_value(Skill::flurry)
+            );
             _DEBUG_MSG(1, "%s activates Flurry x %d\n",
                     status_description(status).c_str(), status->skill_base_value(Skill::flurry));
             num_actions += status->skill_base_value(Skill::flurry);
@@ -1491,12 +1520,24 @@ void turn_end_phase(Field* fd)
                         fd->inc_counter(QuestType::skill_damage, Skill::poison, 0, poison_dmg);
                     }
 #endif
+                        _DEBUG_STRAP(
+                            "turn", fd->turn,
+                            "active_player", fd->tapi,
+                            "poison_damage_"+strap_string(&status), 1.0,
+                            "poison_damage", poison_dmg
+                        );
                         _DEBUG_MSG(1, "%s takes poison damage %u\n", status_description(&status).c_str(), poison_dmg);
                         remove_hp(fd, &status, poison_dmg);  // simultaneous
                     }
                 }
                 else {
                     unsigned poison_dmg = status.m_poisoned;
+                    _DEBUG_STRAP(
+                        "turn", fd->turn,
+                        "active_player", fd->tapi,
+                        "poison_damage_"+strap_string(&status), 1.0,
+                        "poison_damage", poison_dmg
+                    );
                     _DEBUG_MSG(1, "%s takes poison damage %u\n", status_description(&status).c_str(), poison_dmg);
                     remove_hp(fd, &status, poison_dmg);  // simultaneous
                     status.m_poisoned = status.m_poisoned - (poison_dmg+1)/2;
@@ -1891,6 +1932,13 @@ struct PerformAttack
                 if(!reduced_desc.empty()) { desc += "-[" + reduced_desc + "]"; }
                 if(!desc.empty()) { desc += "=" + tuo::to_string(att_dmg); }
                 else { assert(att_dmg == pre_modifier_dmg); }
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "attack_attacker_"+strap_string(att_status), 1.0,
+                    "attack_defender_"+strap_string(def_status), 1.0,
+                    "attack_damage", pre_modifier_dmg
+                );
                 _DEBUG_MSG(1, "%s attacks %s for %u%s damage\n",
                         status_description(att_status).c_str(),
                         status_description(def_status).c_str(), pre_modifier_dmg, desc.c_str());
@@ -2629,11 +2677,27 @@ inline bool check_and_perform_skill(Field* fd, CardStatus* src, CardStatus* dst,
         if (is_evadable && (dst->m_evaded < dst->skill(Skill::evade)))
         {
             ++ dst->m_evaded;
+            _DEBUG_STRAP(
+                "turn", fd->turn,
+                "active_player", fd->tapi,
+                "evade_source_"+strap_string(src),1.0,
+                "evade_destination_"+strap_string(dst),1.0,
+                "evade_skill_"+skill_names[s.id],1.0,
+                "evade_skill_x",s.x
+            );
             _DEBUG_MSG(1, "%s %s on %s but it evades\n",
                     status_description(src).c_str(), skill_short_description(fd->cards, s).c_str(),
                     status_description(dst).c_str());
             return(false);
         }
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "skill_source_"+strap_string(src),1.0,
+            "skill_target_"+strap_string(dst),1.0,
+            "skill_"+skill_names[s.id],1.0,
+            "skill_x", s.x
+        );
         _DEBUG_MSG(1, "%s %s on %s\n",
                 status_description(src).c_str(), skill_short_description(fd->cards, s).c_str(),
                 status_description(dst).c_str());
@@ -2650,6 +2714,14 @@ inline bool check_and_perform_skill(Field* fd, CardStatus* src, CardStatus* dst,
                 && skill_check<skill_id>(fd, src, src))
         {
             ++ dst->m_tributed;
+            _DEBUG_STRAP(
+                "turn", fd->turn,
+                "active_player", fd->tapi,
+                "tribute_source_"+strap_string(dst),1.0,
+                "tribute_destination_"+strap_string(src),1.0,
+                "tribute_skill_"+skill_names[s.id],1.0,
+                "tribute_skill_x",s.x
+            );
             _DEBUG_MSG(1, "%s tributes %s back to %s\n",
                     status_description(dst).c_str(), skill_short_description(fd->cards, s).c_str(),
                     status_description(src).c_str());
@@ -2714,6 +2786,13 @@ void perform_mark(Field* fd, CardStatus* att_status, CardStatus* def_status)
     // Increase Mark-counter
     unsigned mark_base = att_status->skill(Skill::mark);
     if(mark_base && skill_check<Skill::mark>(fd,att_status,def_status)) {
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "mark_attacker_"+strap_string(att_status), 1.0,
+            "mark_defender_"+strap_string(def_status), 1.0,
+            "mark_value", mark_base
+        );
         _DEBUG_MSG(1, "%s marks %s for %u\n",
                 status_description(att_status).c_str(), status_description(def_status).c_str(), mark_base);
         def_status->m_marked += mark_base;
@@ -2773,6 +2852,13 @@ void perform_poison(Field* fd, CardStatus* att_status, CardStatus* def_status)
         if (is_alive(att_status) && def_status->has_skill(Skill::poison))
         {
             unsigned poison_value = def_status->skill(Skill::poison);
+            _DEBUG_STRAP(
+                "turn", fd->turn,
+                "active_player", fd->tapi,
+                "poison_attacker_"+strap_string(att_status),1.0,
+                "poison_defender_"+strap_string(def_status),1.0,
+                "poison_value", poison_value
+            );
             _DEBUG_MSG(1, "%s gets poisoned by %u from %s\n",
                             status_description(att_status).c_str(), poison_value,
                             status_description(def_status).c_str());
@@ -2788,6 +2874,13 @@ void perform_corrosive(Field* fd, CardStatus* att_status, CardStatus* def_status
     if (corrosive_value > att_status->m_corroded_rate)
     {
         // perform_skill_corrosive
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "corrosive_attacker_"+strap_string(att_status), 1.0,
+            "corrosive_defender_"+strap_string(def_status), 1.0,
+            "corrosive_value", corrosive_value
+        );
         _DEBUG_MSG(1, "%s corrodes %s by %u\n",
                 status_description(def_status).c_str(),
                 status_description(att_status).c_str(), corrosive_value);
@@ -2810,6 +2903,13 @@ void perform_counter(Field* fd, CardStatus* att_status, CardStatus* def_status)
                     fd->inc_counter(QuestType::skill_damage, Skill::counter, 0, counter_dmg);
                 }
 #endif
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "counter_attacker_"+strap_string(att_status), 1.0,
+                    "counter_defender_"+strap_string(def_status), 1.0,
+                    "counter_damage", counter_dmg
+                );
                 _DEBUG_MSG(1, "%s takes %u counter damage from %s\n",
                         status_description(att_status).c_str(), counter_dmg,
                         status_description(def_status).c_str());
@@ -2885,6 +2985,13 @@ void PerformAttack::perform_swipe_drain<CardType::assault>(Field* fd, CardStatus
                 //    def_status->protected_value());
                 unsigned remaining_dmg = remove_absorption(fd,adj_status,swipe_value + drain_value + adj_status->m_enfeebled);
                 remaining_dmg = safe_minus(remaining_dmg,adj_status->protected_value());
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "swipe_attacker_"+strap_string(att_status),1.0,
+                    "swipe_defender_"+strap_string(adj_status),1.0,
+                    "swipe_damage", remaining_dmg
+                );
                 _DEBUG_MSG(1, "%s swipes %s for %u damage\n",
                         status_description(att_status).c_str(),
                         status_description(adj_status).c_str(), remaining_dmg);
@@ -2894,6 +3001,12 @@ void PerformAttack::perform_swipe_drain<CardType::assault>(Field* fd, CardStatus
             }
             if (drain_value && skill_check<Skill::drain>(fd, att_status, nullptr))
             {
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "drain_attacker_"+strap_string(att_status),1.0,
+                    "drain_amount", drain_total_dmg
+                );
                 _DEBUG_MSG(1, "%s drains %u hp\n",
                         status_description(att_status).c_str(), drain_total_dmg);
                 att_status->add_hp(drain_total_dmg);
@@ -2918,6 +3031,13 @@ void perform_hunt(Field* fd, CardStatus* att_status, CardStatus* def_status) {
             {
                 unsigned remaining_dmg = remove_absorption(fd,hunted_status,hunt_value + hunted_status->m_enfeebled);
                 remaining_dmg = safe_minus(remaining_dmg,hunted_status->protected_value());
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "hunt_attacker_"+strap_string(att_status),1.0,
+                    "hunt_defender_"+strap_string(hunted_status),1.0,
+                    "hunt_damage", remaining_dmg
+                );
                 _DEBUG_MSG(1, "%s hunts %s for %u damage\n",
                         status_description(att_status).c_str(),
                         status_description(hunted_status).c_str(), remaining_dmg);
@@ -2942,6 +3062,7 @@ void perform_subdue(Field* fd, CardStatus* att_status, CardStatus* def_status)
                 unsigned subdue_value = def_status->skill(Skill::subdue);
                 if (__builtin_expect(subdue_value, false))
                 {
+
                     _DEBUG_MSG(1, "%s subdues %s by %u\n",
                             status_description(def_status).c_str(),
                             status_description(att_status).c_str(), subdue_value);
@@ -2951,6 +3072,14 @@ void perform_subdue(Field* fd, CardStatus* att_status, CardStatus* def_status)
                     {
                         att_status->m_temp_attack_buff -= att_status->calc_attack_power();
                     }
+                    _DEBUG_STRAP(
+                        "turn", fd->turn,
+                        "active_player", fd->tapi,
+                        "subdue_attacker_"+strap_string(att_status),1.0,
+                        "subdue_defender_"+strap_string(def_status),1.0,
+                        "subdue_value", subdue_value,
+                        "subdue_hp_loss", safe_minus(att_status->m_hp , att_status->max_hp())
+                    );
                     if (att_status->m_hp > att_status->max_hp())
                     {
                         _DEBUG_MSG(1, "%s loses %u HP due to subdue (max hp: %u)\n",
@@ -3044,6 +3173,13 @@ bool check_and_perform_inhibit(Field* fd, CardStatus* att_status,CardStatus* def
       unsigned inhibit_value = att_status->skill(Skill::inhibit);
       if (inhibit_value > def_status->m_inhibited && skill_check<Skill::inhibit>(fd, att_status, def_status))
       {
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "inhibit_attacker_"+strap_string(att_status),1.0,
+            "inhibit_defender_"+strap_string(def_status),1.0,
+            "inhibit_value", inhibit_value
+        );
         _DEBUG_MSG(1, "%s inhibits %s by %u\n",
                 status_description(att_status).c_str(),
                 status_description(def_status).c_str(), inhibit_value);
@@ -3057,6 +3193,13 @@ bool check_and_perform_sabotage(Field* fd, CardStatus* att_status, CardStatus* d
     unsigned sabotage_value = att_status->skill(Skill::sabotage);
     if (sabotage_value > def_status->m_sabotaged && skill_check<Skill::sabotage>(fd, att_status, def_status))
     {
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "sabotage_attacker_"+strap_string(att_status),1.0,
+            "sabotage_defender_"+strap_string(def_status),1.0,
+            "sabotage_value", sabotage_value
+        );
         _DEBUG_MSG(1, "%s sabotages %s by %u\n",
                 status_description(att_status).c_str(),
                 status_description(def_status).c_str(), sabotage_value);
@@ -3069,6 +3212,13 @@ bool check_and_perform_disease(Field* fd, CardStatus* att_status,CardStatus* def
 {
     unsigned disease_base = att_status->skill(Skill::disease);
     if(disease_base && skill_check<Skill::disease>(fd, att_status, def_status)) {
+        _DEBUG_STRAP(
+            "turn", fd->turn,
+            "active_player", fd->tapi,
+            "disease_attacker_"+strap_string(att_status),1.0,
+            "disease_defender_"+strap_string(def_status),1.0,
+            "disease_value", disease_base
+        );
         _DEBUG_MSG(1, "%s diseases %s for %u\n",
         status_description(att_status).c_str(), status_description(def_status).c_str(), disease_base);
         def_status->m_diseased += disease_base;
@@ -3369,11 +3519,17 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
                 }
 
                 // apply revenged skill
-#ifndef NDEBUG
+                _DEBUG_STRAP(
+                    "turn", fd->turn,
+                    "active_player", fd->tapi,
+                    "revenger_"+strap_string(pb_status), 1.0,
+                    "revenged_target_"+strap_string(target_status), 1.0,
+                    "revenged_skill_"+skill_names[skill_id], 1.0,
+                    "revenged_skill_value", s.x
+                );
                 _DEBUG_MSG(1, "%s Revenge (to %s) %s on %s\n",
                         status_description(pb_status).c_str(), target_desc,
                         skill_short_description(fd->cards, s).c_str(), status_description(target_status).c_str());
-#endif
                 perform_skill<skill_id>(fd, pb_status, target_status, s);
                 ++ revenged_count;
 
@@ -3422,6 +3578,14 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
             }
 
             // apply paybacked skill
+            _DEBUG_STRAP(
+                "turn", fd->turn,
+                "active_player", fd->tapi,
+                "paybacker_"+strap_string(pb_status), 1.0,
+                "paybacked_target_"+strap_string(src), 1.0,
+                "paybacked_skill_"+skill_names[skill_id], 1.0,
+                "paybacked_skill_value", s.x
+            );
             _DEBUG_MSG(1, "%s Payback %s on %s\n",
                     status_description(pb_status).c_str(), skill_short_description(fd->cards, s).c_str(), status_description(src).c_str());
             perform_skill<skill_id>(fd, pb_status, src, s);
