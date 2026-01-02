@@ -2683,7 +2683,7 @@ inline bool check_and_perform_skill(Field* fd, CardStatus* src, CardStatus* dst,
                 "evade_source_"+strap_string(src),1.0,
                 "evade_destination_"+strap_string(dst),1.0,
                 "evade_skill_"+skill_names[s.id],1.0,
-                "evade_skill_x",s.x,
+                "evade_skill_x",s.x
             );
             _DEBUG_MSG(1, "%s %s on %s but it evades\n",
                     status_description(src).c_str(), skill_short_description(fd->cards, s).c_str(),
