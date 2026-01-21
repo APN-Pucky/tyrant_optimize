@@ -19,7 +19,7 @@ jobs:
           apt-get install -y git sudo gnupg software-properties-common python3-pip
           ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime
           echo "Etc/UTC" > /etc/timezone
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
           fetch-depth: 0
