@@ -554,11 +554,6 @@ void Deck::show_upgrades(std::stringstream &ios, const Card* card, unsigned card
 	}
 }
 
-Deck* Deck::clone() const
-{
-	return(new Deck(*this));
-}
-
 const Card* Deck::next(Field* f)
 {
 	if (shuffled_cards.empty())
@@ -633,9 +628,7 @@ const Card* Deck::next(Field* f)
 			{
 				//copy hand
 				Hand hand1(*f->players[0]);
-				//hand1.deck=hand1.deck->clone();
 				Hand hand2(*f->players[1]);
-				//hand2.deck = hand2.deck->clone();
 				Deck deck1(*hand1.deck);
 				Deck deck2(*hand2.deck);
 				hand1.deck = &deck1;
@@ -713,9 +706,7 @@ const Card* Deck::next(Field* f)
 			{
 				//copy hand
 				Hand hand1(*f->players[0]);
-				//hand1.deck=hand1.deck->clone();
 				Hand hand2(*f->players[1]);
-				//hand2.deck = hand2.deck->clone();
 				Deck deck1(*hand1.deck);
 				Deck deck2(*hand2.deck);
 				hand1.deck = &deck1;

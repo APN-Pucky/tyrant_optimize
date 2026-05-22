@@ -144,7 +144,6 @@ public:
     void add_dominions(const std::string& deck_string_, bool override_dom);
     void add_dominion(const Card* dom_card, bool override_dom);
 
-    Deck* clone() const;
     std::vector<const Card*> sorted_ids() const;
     std::string hash() const;
     std::string short_description() const;

@@ -1000,12 +1000,12 @@ void SimulationData::set_decks(std::vector<Deck *> const your_decks_, std::vecto
 {
     for (unsigned i(0); i < your_decks_.size(); ++i)
     {
-        your_decks[i].reset(your_decks_[i]->clone());
+        your_decks[i].reset(new Deck(*your_decks_[i]));
         your_hands[i]->deck = your_decks[i].get();
     }
     for (unsigned i(0); i < enemy_decks_.size(); ++i)
     {
-        enemy_decks[i].reset(enemy_decks_[i]->clone());
+        enemy_decks[i].reset(new Deck(*enemy_decks_[i]));
         enemy_hands[i]->deck = enemy_decks[i].get();
     }
 }
@@ -1928,12 +1928,12 @@ void print_sim_card_values(Deck *original_deck, Process &p, unsigned iter) // ru
     std::string last_name;
     long double score;
     Deck *sim_deck = p.your_decks[0];
-    Deck *your_deck = original_deck->clone(); // save the original deck
-    auto cards = your_deck->cards;
+    Deck your_deck(*original_deck); // save the original deck
+    auto cards = your_deck.cards;
     // sim original/base result
-    sim_deck->commander = your_deck->commander;
-    sim_deck->cards = your_deck->cards;
-    sim_deck->alpha_dominion = your_deck->alpha_dominion;
+    sim_deck->commander = your_deck.commander;
+    sim_deck->cards = your_deck.cards;
+    sim_deck->alpha_dominion = your_deck.alpha_dominion;
     EvaluatedResults results = {EvaluatedResults::first_type(p.enemy_decks.size() * p.your_decks.size()), 0};
     results = p.evaluate(iter, results);
     const FinalResults<long double> fr_base = compute_score(results, p.factors);
@@ -1950,7 +1950,7 @@ void print_sim_card_values(Deck *original_deck, Process &p, unsigned iter) // ru
         //{
         last_name = card->m_name;
         // sim it
-        sim_deck->cards = your_deck->cards;                 // reset cards
+        sim_deck->cards = your_deck.cards;                 // reset cards
         sim_deck->cards.erase(sim_deck->cards.begin() + i); // remove to test card
         EvaluatedResults results = {EvaluatedResults::first_type(p.enemy_decks.size() * p.your_decks.size()), 0};
         results = p.evaluate(iter, results);
@@ -1961,7 +1961,7 @@ void print_sim_card_values(Deck *original_deck, Process &p, unsigned iter) // ru
         mns.insert(std::make_pair(card->m_name, score));
         //}
     }
-    sim_deck->cards = your_deck->cards; // reset cards
+    sim_deck->cards = your_deck.cards; // reset cards
     if (vc_x > 0)
     {
         // std::cout << "Locked Deck: ";
@@ -3831,7 +3831,7 @@ DeckResults run(int argc, const char **argv)
         Deck *your_deck{nullptr};
         try
         {
-            your_deck = find_deck(decks, all_cards, deck_parsed.first)->clone();
+            your_deck = new Deck(*find_deck(decks, all_cards, deck_parsed.first));
         }
         catch (const std::runtime_error &e)
         {
@@ -4146,7 +4146,7 @@ DeckResults run(int argc, const char **argv)
             EvaluatedResults results = {EvaluatedResults::first_type(enemy_decks.size() * your_decks.size()), 0};
             results = p.evaluate(std::get<0>(op), results);
             print_results(results, p.factors);
-            fr = std::make_pair(your_deck->clone(), compute_score(results, p.factors));
+            fr = std::make_pair(new Deck(*your_deck), compute_score(results, p.factors));
             print_sim_card_values(fr.first, p, std::get<0>(op));
             break;
         }
