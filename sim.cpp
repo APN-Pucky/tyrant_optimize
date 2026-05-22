@@ -1909,9 +1909,9 @@ struct PerformAttack
             if (__builtin_expect(fd->bg_effects[fd->tapi][PassiveBGE::unity] && coalition_value, false)
                     && can_be_healed(att_status))
             {
-                auto value = coalition_value; // No longer the old (coalition_value + 1)/2 per issue #109
-                _DEBUG_MSG(1, "Unity: %s heals itself for %u\n", status_description(att_status).c_str(), value );
-                att_status->add_hp(value);
+                // Unity no longer uses the legacy half-heal scaling (issue #109).
+                _DEBUG_MSG(1, "Unity: %s heals itself for %u\n", status_description(att_status).c_str(), coalition_value);
+                att_status->add_hp(coalition_value);
             }
         }
 
