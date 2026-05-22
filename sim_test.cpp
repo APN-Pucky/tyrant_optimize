@@ -14,6 +14,8 @@
 #include <iostream>
 #include <exception>
 #include <sstream>
+#include <regex>
+#include <limits>
 #include "tyrant.h"
 #include "tyrant_optimize.h"
 #include "sim.h"
@@ -236,6 +238,16 @@ inline double time_ml(std::string gnt1, std::string gnt2)
     // result.second += "\nTest: " + ti.your_deck + "; " + ti.enemy_deck + "; " + ti.bge;
     // check_win(result);
     return std::get<2>(result);
+}
+
+inline unsigned long get_skipped_simulations(std::string const& output)
+{
+    std::smatch matches;
+    if (std::regex_search(output, matches, std::regex("Evaluated [0-9]+ decks \\([0-9]+ \\+ ([0-9]+) simulations\\)\\.")))
+    {
+        return std::stoul(matches[1].str());
+    }
+    return std::numeric_limits<unsigned long>::max();
 }
 
 inline void genetic(std::string gnt1, std::string gnt2)
@@ -524,6 +536,23 @@ BOOST_AUTO_TEST_CASE(test_db_scaling)
     auto t1 = time_db_sim("Sir Alaric the Swift-1, Broodmother's Nexus-1, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6, ", "Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6,");
     auto t2 =     time_db("Sir Alaric the Swift-1, Broodmother's Nexus-1, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6, ", "Sir Alaric the Swift-1, Broodmother's Nexus-6, Mystic Gatekeeper-6, Ruthless Pursuer-6, Maculakornos-6, Primal Yeren-6, Megalift Foundry-6, Kinaxa Soulspark-6, Mangler of Existence-6, Mangler of Existence-6, Eranore's Obstructor-6, Eranore's Obstructor-6,");
     BOOST_CHECK_MESSAGE(t1 > t2, "DB time improvement failed: " + std::to_string(t1) + " > " + std::to_string(t2));
+}
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(test_db_skipped_counter)
+BOOST_AUTO_TEST_CASE(test_db_skipped_counter_on_hit)
+{
+    iter = 1;
+    const char *warmup_argv[] = {"tuo", "Mission#134", "Mission#135", "beam", "1", "seed", "1", "prefix", "tests/db/", "db", "no-db-load"};
+    Result warmup(run_sim(sizeof(warmup_argv) / sizeof(*warmup_argv), warmup_argv));
+    auto warmup_skipped = get_skipped_simulations(std::get<1>(warmup));
+    BOOST_REQUIRE_MESSAGE(warmup_skipped != std::numeric_limits<unsigned long>::max(), "Failed to parse skipped simulations from warmup output");
+
+    const char *cached_argv[] = {"tuo", "Mission#134", "Mission#135", "beam", "1", "seed", "1", "prefix", "tests/db/", "db"};
+    Result cached(run_sim(sizeof(cached_argv) / sizeof(*cached_argv), cached_argv));
+    auto cached_skipped = get_skipped_simulations(std::get<1>(cached));
+    BOOST_REQUIRE_MESSAGE(cached_skipped != std::numeric_limits<unsigned long>::max(), "Failed to parse skipped simulations from cached output");
+    BOOST_CHECK_MESSAGE(cached_skipped == 0, "Expected zero skipped simulations on DB-only hit, got " + std::to_string(cached_skipped) + ". Warmup skipped: " + std::to_string(warmup_skipped));
 }
 BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
