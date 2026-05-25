@@ -5,21 +5,6 @@
 
 using namespace tuo;
 
-inline unsigned skipped_simulations_increment(Process& proc, unsigned num_iterations)
-{
-	if (num_iterations == 0 || !use_db_load)
-	{
-		return num_iterations;
-	}
-	std::vector<std::array<std::string, 3>> const vhashes = proc.hashes();
-	EvaluatedResults db_results{EvaluatedResults::first_type(vhashes.size()), 0};
-	if (!proc.check_db(vhashes, num_iterations, db_results))
-	{
-		return 0;
-	}
-	return num_iterations;
-}
-
 inline bool try_improve_deck(Deck* d1, unsigned from_slot, unsigned to_slot, const Card* card_candidate,
 		const Card*& best_commander, const Card*& best_alpha_dominion, std::vector<const Card*>& best_cards,
 		FinalResults<long double>& best_score, unsigned& best_gap, std::string& best_deck,
@@ -58,7 +43,7 @@ inline bool try_improve_deck(Deck* d1, unsigned from_slot, unsigned to_slot, con
 	auto & prev_results = emplace_rv.first->second;
 	if (!emplace_rv.second)
 	{
-		skipped_simulations += skipped_simulations_increment(proc, prev_results.second);
+		skipped_simulations += prev_results.second;
 	}
 
 	// Evaluate new deck
@@ -100,7 +85,7 @@ inline FinalResults<long double> fitness(Deck* d1,
 	auto & prev_results = emplace_rv.first->second;
 	if (!emplace_rv.second)
 	{
-		skipped_simulations += skipped_simulations_increment(proc, prev_results.second);
+		skipped_simulations += prev_results.second;
 	}
 
 	// Evaluate new deck
@@ -235,7 +220,7 @@ DeckResults hill_climbing(unsigned num_min_iterations, unsigned num_iterations, 
 			if (best_score.n_sims >= num_iterations || best_gap > 0)
 			{ break; } // exit main climbing loop
 			auto & prev_results = evaluated_decks[best_deck];
-			skipped_simulations += skipped_simulations_increment(proc, prev_results.second);
+			skipped_simulations += prev_results.second;
 			// Re-evaluate the best deck
 			d1->commander = best_commander;
 			d1->alpha_dominion = best_alpha_dominion;
@@ -907,7 +892,7 @@ void recursion(unsigned num_iterations, std::vector<unsigned> used, unsigned poo
 		auto & prev_results = emplace_rv.first->second;
 		if(!emplace_rv.second)
 		{
-			skipped_simulations += skipped_simulations_increment(proc, prev_results.second);
+			skipped_simulations += prev_results.second;
 		}
 		auto compare_results= proc.evaluate(num_iterations, prev_results);
 		auto current_score = compute_score(compare_results, proc.factors);

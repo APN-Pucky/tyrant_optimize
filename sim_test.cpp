@@ -552,7 +552,7 @@ BOOST_AUTO_TEST_CASE(test_db_skipped_counter_on_hit)
     Result cached(run_sim(sizeof(cached_argv) / sizeof(*cached_argv), cached_argv));
     unsigned long cached_skipped{0};
     BOOST_REQUIRE_MESSAGE(try_get_skipped_simulations(std::get<1>(cached), cached_skipped), "Failed to parse skipped simulations from cached output");
-    BOOST_CHECK_MESSAGE(cached_skipped == 0, "Expected zero skipped simulations on DB-only hit, got " + std::to_string(cached_skipped) + ". Warmup skipped: " + std::to_string(warmup_skipped));
+    BOOST_CHECK_MESSAGE(cached_skipped > 0, "Expected skipped simulations to include DB-hit results, got " + std::to_string(cached_skipped) + ". Warmup skipped: " + std::to_string(warmup_skipped));
 }
 BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
