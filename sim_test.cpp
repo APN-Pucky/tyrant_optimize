@@ -543,10 +543,11 @@ BOOST_AUTO_TEST_SUITE(test_db_skipped_counter)
 BOOST_AUTO_TEST_CASE(test_db_skipped_counter_on_hit)
 {
     iter = 1;
-    const char *warmup_argv[] = {"tuo", "Mission#134", "Mission#135", "beam", "1", "seed", "1", "prefix", "tests/db/", "db", "no-db-load"};
+    const char *warmup_argv[] = {"tuo", "Mission#134", "Mission#135", "climb", "1", "seed", "1", "prefix", "tests/db/", "db", "no-db-load"};
     Result warmup(run_sim(sizeof(warmup_argv) / sizeof(*warmup_argv), warmup_argv));
     unsigned long warmup_skipped{0};
     BOOST_REQUIRE_MESSAGE(try_get_skipped_simulations(std::get<1>(warmup), warmup_skipped), "Failed to parse skipped simulations from warmup output");
+    BOOST_CHECK_MESSAGE(warmup_skipped == 0, "Expected zero skipped simulations for warmup no-db-load run, got " + std::to_string(warmup_skipped));
 
     const char *cached_argv[] = {"tuo", "Mission#134", "Mission#135", "beam", "1", "seed", "1", "prefix", "tests/db/", "db"};
     Result cached(run_sim(sizeof(cached_argv) / sizeof(*cached_argv), cached_argv));
