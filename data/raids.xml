@@ -856,32 +856,29 @@
         <id>64</id>
         <name>Captain Daedalus Raid</name>
         <fortress_pool amount="2">
-                <card>18840</card>
-                <card>18850</card>
-                <card>18860</card>
-                <card>18870</card>
+                <card>18840</card>	<!-- Spaceport Guardian -->
+                <card>18850</card>	<!-- Daedalus' Overcharger -->
+                <card>18860</card>	<!-- Daedalus' Stronghold -->
+                <card>18870</card>	<!-- Artemis Forcefield -->
         </fortress_pool>
         <levels>26</levels>
         <commander>26142</commander>
         <deck>
-            <always_include>
+            <card_pool amount="10">
+                <card>63040</card>	<!-- Artemisian Cygnus -->
                 <card>63040</card>
+                <card>63050</card>	<!-- Captain's Culverin -->
                 <card>63050</card>
+                <card>63060</card>	<!-- Daedalus' Hustle -->
                 <card>63060</card>
+                <card>63070</card>	<!-- Samson of Blackmarsh -->
                 <card>63070</card>
-    <!-- X Overcharged -->
-                <card>63080</card>
-                <card>63090</card>
-                <card>63100</card>
-            <card_pool amount="3">
-                <card>63040</card>
-                <card>63050</card>
-                <card>63060</card>
-                <card>63070</card>
+                <card>63080</card>	<!-- Maximus Overcharged -->
+                <card>63090</card>	<!-- Tiberius Overcharged -->
+                <card>63100</card>	<!-- Kali Overcharged -->
             </card_pool>
-            </always_include>
         </deck>
-    </raid>
+	</raid>
    <raid>
         <id>66</id>
         <name>Exoscaper Raid</name>
