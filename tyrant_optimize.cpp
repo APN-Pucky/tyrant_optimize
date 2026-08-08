@@ -3146,6 +3146,10 @@ DeckResults run(int argc, const char **argv)
         {
             ++debug_print;
         }
+        else if (strcmp(argv[argIndex], "strap") == 0)
+        {
+            debug_strap = true;
+        }
         else if (strcmp(argv[argIndex], "vip") == 0)
         {
             if (check_input_amount(argc, argv, argIndex, 1))
