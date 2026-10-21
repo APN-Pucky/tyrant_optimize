@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -14,7 +15,7 @@ public:
     ~Cards();
 
     std::vector<Card*> all_cards;
-    std::map<unsigned, Card*> cards_by_id;
+    std::unordered_map<unsigned, Card*> cards_by_id;
     std::unordered_set<Card*> player_cards;
     std::map<std::string, Card*> cards_by_name;
     std::vector<Card*> player_commanders;
