@@ -254,6 +254,7 @@ inline void CardStatus::set(const Card& card)
     m_sundered = false;
     //APN
     m_summoned = false;
+    m_skills_modified = false;
 
     std::memset(m_primary_skill_offset, 0, sizeof m_primary_skill_offset);
     std::memset(m_evolved_skill_offset, 0, sizeof m_evolved_skill_offset);
@@ -1436,9 +1437,13 @@ void turn_end_phase(Field* fd)
             }
             status.m_enfeebled = 0;
             status.m_protected = 0;
-            std::memset(status.m_primary_skill_offset, 0, sizeof status.m_primary_skill_offset);
-            std::memset(status.m_evolved_skill_offset, 0, sizeof status.m_evolved_skill_offset);
-            std::memset(status.m_enhanced_value, 0, sizeof status.m_enhanced_value);
+            if (status.m_skills_modified)
+            {
+                std::memset(status.m_primary_skill_offset, 0, sizeof status.m_primary_skill_offset);
+                std::memset(status.m_evolved_skill_offset, 0, sizeof status.m_evolved_skill_offset);
+                std::memset(status.m_enhanced_value, 0, sizeof status.m_enhanced_value);
+                status.m_skills_modified = false;
+            }
             status.m_evaded = 0;  // so far only useful in Inactive turn
             status.m_paybacked = 0;  // ditto
             status.m_entrapped = 0;
@@ -2268,6 +2273,7 @@ inline void perform_skill<Skill::enfeeble>(Field* fd, CardStatus* src, CardStatu
 inline void perform_skill<Skill::enhance>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
 {
     dst->m_enhanced_value[s.s + dst->m_primary_skill_offset[s.s]] += s.x;
+    dst->m_skills_modified = true;
 }
 
     template<>
@@ -2279,6 +2285,7 @@ inline void perform_skill<Skill::evolve>(Field* fd, CardStatus* src, CardStatus*
     dst->m_primary_skill_offset[s.s2] = primary_s1 - s.s2;
     dst->m_evolved_skill_offset[primary_s1] = s.s2 - primary_s1;
     dst->m_evolved_skill_offset[primary_s2] = s.s - primary_s2;
+    dst->m_skills_modified = true;
 }
 
     template<>
