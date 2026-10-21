@@ -256,10 +256,11 @@ inline void CardStatus::set(const Card& card)
     m_summoned = false;
     m_skills_modified = false;
 
-    std::memset(m_primary_skill_offset, 0, sizeof m_primary_skill_offset);
-    std::memset(m_evolved_skill_offset, 0, sizeof m_evolved_skill_offset);
-    std::memset(m_enhanced_value, 0, sizeof m_enhanced_value);
-    std::memset(m_skill_cd, 0, sizeof m_skill_cd);
+    // the four skill arrays are adjacent members: one memset is much cheaper than four
+    static_assert(offsetof(CardStatus, m_skill_cd) + sizeof m_skill_cd - offsetof(CardStatus, m_primary_skill_offset)
+            == sizeof m_primary_skill_offset + sizeof m_evolved_skill_offset + sizeof m_enhanced_value + sizeof m_skill_cd,
+            "CardStatus skill arrays must be adjacent");
+    std::memset(m_primary_skill_offset, 0, offsetof(CardStatus, m_skill_cd) + sizeof m_skill_cd - offsetof(CardStatus, m_primary_skill_offset));
 }
 //------------------------------------------------------------------------------
 /**
