@@ -2431,12 +2431,9 @@ inline void perform_skill<Skill::mimic>(Field* fd, CardStatus* src, CardStatus* 
     mimickable_skills.reserve(dst->m_card->m_skills.size()+dst->m_card->m_skills_on_play.size()+dst->m_card->m_skills_on_death.size()+dst->m_card->m_skills_on_attacked.size());
     _DEBUG_MSG(2, " * Mimickable skills of %s\n", status_description(dst).c_str());
     //include on activate/attacked
-    std::vector<std::vector<SkillSpec>> all;
-    all.emplace_back(dst->m_card->m_skills);
-    all.emplace_back(dst->m_card->m_skills_on_attacked);
-    for(std::vector<SkillSpec> & a : all)
+    for(const std::vector<SkillSpec> * a : {&dst->m_card->m_skills, &dst->m_card->m_skills_on_attacked})
     {
-    for (const SkillSpec & ss: a)
+    for (const SkillSpec & ss: *a)
     {
         // get skill
         Skill::Skill skill_id = static_cast<Skill::Skill>(ss.id);
