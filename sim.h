@@ -220,6 +220,7 @@ struct CardStatus
     bool m_rush_attempted;
     bool m_sundered;
     bool m_summoned;
+    bool m_skills_modified; // m_primary_skill_offset, m_evolved_skill_offset or m_enhanced_value is non-zero
 
     CardStatus() {}
 

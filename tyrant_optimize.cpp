@@ -75,6 +75,12 @@
 
 using namespace tuo;
 using namespace proc;
+
+// Confidence bounds are computed in double precision. Boost promotes double to long double by default, which is
+// slow where long double is a software-emulated 128-bit type (e.g. WebAssembly), and its root finding fails there
+// near 100% wins ("gamma_p_inv<long double>: Root finding evaluation exceeded 200 iterations").
+typedef boost::math::binomial_distribution<double, boost::math::policies::policy<boost::math::policies::promote_double<false>>> binomial_distribution;
+
 // init
 /*
 namespace tuo {
@@ -957,8 +963,8 @@ FinalResults<long double> compute_score(const EvaluatedResults &results, std::ve
             _DEBUG_MSG(2, "WARNING: biominal successes > trials");
         }
 
-        auto lower_bound = boost::math::binomial_distribution<>::find_lower_bound_on_p(trials, successes, prob) * max_possible;
-        auto upper_bound = boost::math::binomial_distribution<>::find_upper_bound_on_p(trials, successes, prob) * max_possible;
+        auto lower_bound = binomial_distribution::find_lower_bound_on_p(trials, successes, prob) * max_possible;
+        auto upper_bound = binomial_distribution::find_upper_bound_on_p(trials, successes, prob) * max_possible;
         if (use_harmonic_mean)
         {
             final.points += factors[index] / (results.first[index].points * results.second / results.first[index].count);
@@ -1296,7 +1302,7 @@ void Process::openmp_compare_reduction(EvaluatedResults &evaluated_results)
                         printf("WARNING: biominal successes {%Le} > trials {%d} in Threads\n", ssuccesses, ttrials);
                         //_DEBUG_MSG(2,"WARNING: biominal successes > trials in Threads");
                     }
-                    compare_stop = (boost::math::binomial_distribution<>::find_upper_bound_on_p(ttrials, ssuccesses, prob) * max_possible <
+                    compare_stop = (binomial_distribution::find_upper_bound_on_p(ttrials, ssuccesses, prob) * max_possible <
                                     thread_best_results->points + min_increment_of_score);
                     if (compare_stop)
                     {
@@ -1617,7 +1623,7 @@ void thread_evaluate(boost::barrier &main_barrier,
                     {
 
                         // Get a loose (better than no) upper bound. TODO: Improve it.
-                        compare_stop = (boost::math::binomial_distribution<>::find_upper_bound_on_p(trials, successes, prob) * max_possible <
+                        compare_stop = (binomial_distribution::find_upper_bound_on_p(trials, successes, prob) * max_possible <
                                         thread_best_results->points + min_increment_of_score);
                         if (compare_stop)
                         {

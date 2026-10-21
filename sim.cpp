@@ -254,11 +254,13 @@ inline void CardStatus::set(const Card& card)
     m_sundered = false;
     //APN
     m_summoned = false;
+    m_skills_modified = false;
 
-    std::memset(m_primary_skill_offset, 0, sizeof m_primary_skill_offset);
-    std::memset(m_evolved_skill_offset, 0, sizeof m_evolved_skill_offset);
-    std::memset(m_enhanced_value, 0, sizeof m_enhanced_value);
-    std::memset(m_skill_cd, 0, sizeof m_skill_cd);
+    // the four skill arrays are adjacent members: one memset is much cheaper than four
+    static_assert(offsetof(CardStatus, m_skill_cd) + sizeof m_skill_cd - offsetof(CardStatus, m_primary_skill_offset)
+            == sizeof m_primary_skill_offset + sizeof m_evolved_skill_offset + sizeof m_enhanced_value + sizeof m_skill_cd,
+            "CardStatus skill arrays must be adjacent");
+    std::memset(m_primary_skill_offset, 0, offsetof(CardStatus, m_skill_cd) + sizeof m_skill_cd - offsetof(CardStatus, m_primary_skill_offset));
 }
 //------------------------------------------------------------------------------
 /**
@@ -1436,9 +1438,13 @@ void turn_end_phase(Field* fd)
             }
             status.m_enfeebled = 0;
             status.m_protected = 0;
-            std::memset(status.m_primary_skill_offset, 0, sizeof status.m_primary_skill_offset);
-            std::memset(status.m_evolved_skill_offset, 0, sizeof status.m_evolved_skill_offset);
-            std::memset(status.m_enhanced_value, 0, sizeof status.m_enhanced_value);
+            if (status.m_skills_modified)
+            {
+                std::memset(status.m_primary_skill_offset, 0, sizeof status.m_primary_skill_offset);
+                std::memset(status.m_evolved_skill_offset, 0, sizeof status.m_evolved_skill_offset);
+                std::memset(status.m_enhanced_value, 0, sizeof status.m_enhanced_value);
+                status.m_skills_modified = false;
+            }
             status.m_evaded = 0;  // so far only useful in Inactive turn
             status.m_paybacked = 0;  // ditto
             status.m_entrapped = 0;
@@ -2268,6 +2274,7 @@ inline void perform_skill<Skill::enfeeble>(Field* fd, CardStatus* src, CardStatu
 inline void perform_skill<Skill::enhance>(Field* fd, CardStatus* src, CardStatus* dst, const SkillSpec& s)
 {
     dst->m_enhanced_value[s.s + dst->m_primary_skill_offset[s.s]] += s.x;
+    dst->m_skills_modified = true;
 }
 
     template<>
@@ -2279,6 +2286,7 @@ inline void perform_skill<Skill::evolve>(Field* fd, CardStatus* src, CardStatus*
     dst->m_primary_skill_offset[s.s2] = primary_s1 - s.s2;
     dst->m_evolved_skill_offset[primary_s1] = s.s2 - primary_s1;
     dst->m_evolved_skill_offset[primary_s2] = s.s - primary_s2;
+    dst->m_skills_modified = true;
 }
 
     template<>
@@ -2423,12 +2431,9 @@ inline void perform_skill<Skill::mimic>(Field* fd, CardStatus* src, CardStatus* 
     mimickable_skills.reserve(dst->m_card->m_skills.size()+dst->m_card->m_skills_on_play.size()+dst->m_card->m_skills_on_death.size()+dst->m_card->m_skills_on_attacked.size());
     _DEBUG_MSG(2, " * Mimickable skills of %s\n", status_description(dst).c_str());
     //include on activate/attacked
-    std::vector<std::vector<SkillSpec>> all;
-    all.emplace_back(dst->m_card->m_skills);
-    all.emplace_back(dst->m_card->m_skills_on_attacked);
-    for(std::vector<SkillSpec> & a : all)
+    for(const std::vector<SkillSpec> * a : {&dst->m_card->m_skills, &dst->m_card->m_skills_on_attacked})
     {
-    for (const SkillSpec & ss: a)
+    for (const SkillSpec & ss: *a)
     {
         // get skill
         Skill::Skill skill_id = static_cast<Skill::Skill>(ss.id);
@@ -3177,7 +3182,9 @@ void perform_targetted_allied_fast(Field* fd, CardStatus* src, const SkillSpec& 
     bool has_counted_quest = false;
 #endif
     bool src_overloaded = src->m_overloaded;
-    std::vector<CardStatus*> selection_array = fd->selection_array;
+    // take the targets without copying them (nested skills select into fd->selection_array), give the buffer back after
+    std::vector<CardStatus*> selection_array;
+    selection_array.swap(fd->selection_array);
     for (CardStatus * dst: selection_array)
     {
         if (dst->m_inhibited > 0 && !src_overloaded)
@@ -3195,6 +3202,7 @@ void perform_targetted_allied_fast(Field* fd, CardStatus* src, const SkillSpec& 
 #endif
                 );
     }
+    fd->selection_array.swap(selection_array);
 
     // Passive BGE: Divert
     if (__builtin_expect(fd->bg_effects[fd->tapi][PassiveBGE::divert], false)
@@ -3257,7 +3265,9 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
 
     // apply skill to each target(dst)
     unsigned selection_array_len = fd->selection_array.size();
-    std::vector<CardStatus*> selection_array = fd->selection_array;
+    // take the targets without copying them (nested skills select into fd->selection_array), give the buffer back after
+    std::vector<CardStatus*> selection_array;
+    selection_array.swap(fd->selection_array);
     for (CardStatus * dst: selection_array)
     {
         // TurningTides
@@ -3288,6 +3298,7 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
             }
         }
     }
+    fd->selection_array.swap(selection_array);
 
     // apply TurningTides
     if (__builtin_expect(has_turningtides, false) && (turningtides_value > 0))
