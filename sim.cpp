@@ -1055,6 +1055,7 @@ struct PlayCard
             status->m_player = actor_index;
             status->m_field = fd;
             status->m_summoned = summoned;
+            _DEBUG_MSG(1, "%s placeCard\n", status_description(status).c_str());
 
             // reduce delay for summoned card by tower (structure) for normal (non-triggered) summon skill
             if (summoned && __builtin_expect(fd->fixes[Fix::reduce_delay_summoned_by_tower], true)
