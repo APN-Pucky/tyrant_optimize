@@ -3185,7 +3185,9 @@ void perform_targetted_allied_fast(Field* fd, CardStatus* src, const SkillSpec& 
     bool has_counted_quest = false;
 #endif
     bool src_overloaded = src->m_overloaded;
-    std::vector<CardStatus*> selection_array = fd->selection_array;
+    // take the targets without copying them (nested skills select into fd->selection_array), give the buffer back after
+    std::vector<CardStatus*> selection_array;
+    selection_array.swap(fd->selection_array);
     for (CardStatus * dst: selection_array)
     {
         if (dst->m_inhibited > 0 && !src_overloaded)
@@ -3203,6 +3205,7 @@ void perform_targetted_allied_fast(Field* fd, CardStatus* src, const SkillSpec& 
 #endif
                 );
     }
+    fd->selection_array.swap(selection_array);
 
     // Passive BGE: Divert
     if (__builtin_expect(fd->bg_effects[fd->tapi][PassiveBGE::divert], false)
@@ -3265,7 +3268,9 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
 
     // apply skill to each target(dst)
     unsigned selection_array_len = fd->selection_array.size();
-    std::vector<CardStatus*> selection_array = fd->selection_array;
+    // take the targets without copying them (nested skills select into fd->selection_array), give the buffer back after
+    std::vector<CardStatus*> selection_array;
+    selection_array.swap(fd->selection_array);
     for (CardStatus * dst: selection_array)
     {
         // TurningTides
@@ -3296,6 +3301,7 @@ void perform_targetted_hostile_fast(Field* fd, CardStatus* src, const SkillSpec&
             }
         }
     }
+    fd->selection_array.swap(selection_array);
 
     // apply TurningTides
     if (__builtin_expect(has_turningtides, false) && (turningtides_value > 0))
