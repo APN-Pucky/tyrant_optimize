@@ -23,16 +23,17 @@ const std::string skill_names[Skill::num_skills] =
 
     // Defensive:
     "Armor", "Avenge", "Scavenge", "Corrosive", "Counter", "Evade", "Subdue", "Absorb", "Flying",
-    "Payback", "Revenge", "Tribute", "Refresh", "Wall", "Barrier",
+    "Payback", "Revenge", "Tribute", "Refresh", "Wall", "Barrier", "Poison",
 
     // Combat-Modifier:
-    "Coalition", "Legion", "Pierce", "Rupture", "Swipe", "Drain", "Venom", "Hunt","Mark",
+    "Coalition", "Legion", "Pierce", "Rupture", "Swipe", "Drain", "Venom", "Hunt", "Mark",
 
-    // Damage-Dependant:
-    "Berserk", "Leech", "Poison",
+    // Damage-Dependent:
+    "Berserk", "Leech",
 
     // Instant-Debuff:
     "Inhibit", "Sabotage", "Disease",
+
     // Triggered:
     "Allegiance", "Flurry", "Valor", "Stasis", "Summon", "Bravery", "Enhance",
 };
