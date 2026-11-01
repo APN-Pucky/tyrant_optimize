@@ -1374,6 +1374,8 @@ void turn_start_phase(Field* fd)
     cooldown_skills(&fd->tap->commander);
     //grab assaults before new ones get summoned
     auto& assaults(fd->tap->assaults);
+    //grab structures before new ones get summoned
+    auto& structures(fd->tap->structures);
     // We store the assaults size here that exist at the begining of a turn
     // because the turn_start_phase_update of a structure should not be triggered
     // of a assault summoned by a struct. Similarly structures summoned by structures
@@ -1389,7 +1391,6 @@ void turn_start_phase(Field* fd)
     // update index
     // reduce delay; reduce skill cooldown
     {
-        auto& structures(fd->tap->structures);
         for(unsigned index(0); index < structures_end; ++index)
         {
             CardStatus * status = &structures[index];
