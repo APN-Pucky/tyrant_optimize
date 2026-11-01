@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [6.5.9] - 2025-06-28
+## [6.5.10] - 2026-11-01
+
+### Fixed
+
+- Race condition on database.yml when multiple processes read or write
+
+## [6.5.9] - 2026-11-01
 
 ### Fixed
 
