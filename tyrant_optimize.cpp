@@ -450,11 +450,22 @@ void write_db(std::string prefix)
             // close file
             file.close();
             boost::system::error_code ec;
-            boost::filesystem::rename(tmp_path, db_path, ec);
-            if (ec)
+            if (!file)
             {
-                std::cout << "DB failed to atomically update database.yml: " << ec.message() << std::endl;
+                // ofstream doesn't throw on write failures by default (disk full,
+                // quota, etc.); without this check a partially-written temp file
+                // would still get renamed over the good database.yml
+                std::cout << "DB failed to write temporary database file, preserving database.yml" << std::endl;
                 boost::filesystem::remove(tmp_path, ec);
+            }
+            else
+            {
+                boost::filesystem::rename(tmp_path, db_path, ec);
+                if (ec)
+                {
+                    std::cout << "DB failed to atomically update database.yml: " << ec.message() << std::endl;
+                    boost::filesystem::remove(tmp_path, ec);
+                }
             }
         }
         catch (const boost::interprocess::interprocess_exception &e)
