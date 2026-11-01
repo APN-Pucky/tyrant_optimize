@@ -5,6 +5,7 @@ Divine Blessing: Heal all 4; Rally all 3; Strike all 4
 Winter Tempest: Enhance all subdue 20; Protect All 10; Weaken All 10
 //Winter Tempest: Protect All 10; Weaken All 10
 Charged Up: Overload all; Rally all 3; Strike all 3
+Overcharged: Overload all
 Progenitor Tech: Heal all 1; Protect all 1; Rally all 1; Enfeeble all 1; Strike all 1; Weaken all 1
 Plasma Burst: Heal all 9; Protect all 9; Sunder 9
 Tartarian Gift: Rally all 8; Enrage all 8

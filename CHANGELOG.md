@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.5.10] - 2026-11-01
 
+### Added
+
+- Overcharged BGE
+
 ### Fixed
 
 - Race condition on database.yml when multiple processes read or write
