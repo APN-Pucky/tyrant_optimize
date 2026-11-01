@@ -1373,7 +1373,12 @@ void turn_start_phase(Field* fd)
     cooldown_skills(&fd->tap->commander);
     //grab assaults before new ones get summoned
     auto& assaults(fd->tap->assaults);
-    unsigned end(assaults.size());
+    // We store the assaults size here that exist at the begining of a turn
+    // because the turn_start_phase_update of a structure should not be triggered
+    // of a assault summoned by a struct. Similarly structures summoned by structures
+    // should not retrigger the new one.
+    unsigned assaults_end(assaults.size());
+    unsigned structures_end(structures.size());
 
     //Perform early enhance for commander
     check_and_perform_early_enhance(fd,&fd->tap->commander);
@@ -1384,7 +1389,7 @@ void turn_start_phase(Field* fd)
     // reduce delay; reduce skill cooldown
     {
         auto& structures(fd->tap->structures);
-        for(unsigned index(0), end(structures.size()); index < end; ++index)
+        for(unsigned index(0); index < structures_end; ++index)
         {
             CardStatus * status = &structures[index];
             status->m_index = index;
@@ -1395,7 +1400,7 @@ void turn_start_phase(Field* fd)
     // update index
     // reduce delay; reduce skill cooldown
     {
-        for(unsigned index(0); index < end; ++index)
+        for(unsigned index(0); index < assaults_end; ++index)
         {
             CardStatus * status = &assaults[index];
             status->m_index = index;
