@@ -40,6 +40,8 @@
 #include <math.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/interprocess/sync/file_lock.hpp>
+#include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/math/distributions/binomial.hpp>
 #include <boost/optional.hpp>
@@ -275,6 +277,65 @@ void load_ml(std::string prefix)
     }
 }
 
+using Database = std::map<std::string, std::map<std::string, std::map<std::string, Results<uint64_t>>>>;
+
+// reads the "version: ..." / "xml_check_sum: ..." header lines of a database.yml stream
+void parse_db_header(std::istream &file, std::string &version, std::string &check)
+{
+    std::string line;
+    // another process may still be in the middle of (re)writing the db file;
+    // guard every substr so a half-written/truncated line can't throw/crash us
+    getline(file, line);
+    {
+        auto colon = line.find(":");
+        if (colon != std::string::npos && colon + 2 <= line.size())
+            version = line.substr(colon + 2);
+    }
+    getline(file, line);
+    {
+        auto colon = line.find(":");
+        if (colon != std::string::npos && colon + 2 <= line.size())
+            check = line.substr(colon + 2);
+    }
+}
+
+// parses the records that follow the header of a database.yml stream into out
+void parse_db_body(std::istream &file, Database &out)
+{
+    std::string line, hfield, hydeck, hedeck;
+    uint64_t wins, draws, losses, points, count;
+    while (getline(file, line))
+    {
+        auto colon = line.find(":");
+        if (line.rfind("\t\t", 0) == 0 && colon != std::string::npos)
+        {
+            // a concurrent writer may have left this (the last) line truncated
+            // right after the colon; skip it instead of reading out of bounds
+            if (colon + 2 > line.size())
+                continue;
+            hedeck = line.substr(2, colon - 2);
+            std::istringstream reader(line.substr(colon + 2));
+            reader >> wins >> draws >> losses >> points >> count;
+            if (reader.fail())
+                continue;
+            out[hfield][hydeck][hedeck] = {wins, draws, losses, points, count};
+            // std::cout << "load db: " << hfield << " " << hydeck << " " << hedeck << " " <<wins<< " "<< draws<< " "<< losses<< " " <<points<< " " <<count << std::endl;
+        }
+        else if (line.rfind("\t", 0) == 0 && colon != std::string::npos)
+        {
+            hydeck = line.substr(1, colon - 1);
+        }
+        else if (colon != std::string::npos)
+        {
+            hfield = line.substr(0, colon);
+        }
+        else
+        {
+            std::cout << "unknown db line: " << line;
+        }
+    }
+}
+
 // load database map from file
 void load_db(std::string prefix)
 {
@@ -284,18 +345,9 @@ void load_db(std::string prefix)
         // open file to read from
         std::ifstream file;
         file.open(prefix + "data/database.yml");
-        // read map from file
-        std::string name;
-        uint64_t wins, draws, losses, points, count;
         std::string version, check;
-        std::string line;
-        getline(file, line);
-        if (line.find(":") != std::string::npos)
-            version = line.substr(line.find(":") + 2);
+        parse_db_header(file, version, check);
         std::cout << "DB version " << version << std::endl;
-        getline(file, line);
-        if (line.find(":") != std::string::npos)
-            check = line.substr(line.find(":") + 2);
         std::cout << "DB checksum " << check << std::endl;
 
         if (use_strict_db)
@@ -318,32 +370,7 @@ void load_db(std::string prefix)
             }
         }
 
-        std::string hfield;
-        std::string hydeck;
-        std::string hedeck;
-        while (getline(file, line))
-        {
-            if (line.rfind("\t\t", 0) == 0 && line.find(":") != std::string::npos)
-            {
-                hedeck = line.substr(2, line.find(":") - 2);
-                std::istringstream reader(line.substr(line.find(":") + 2));
-                reader >> wins >> draws >> losses >> points >> count;
-                database[hfield][hydeck][hedeck] = {wins, draws, losses, points, count};
-                // std::cout << "load db: " << hfield << " " << hydeck << " " << hedeck << " " <<wins<< " "<< draws<< " "<< losses<< " " <<points<< " " <<count << std::endl;
-            }
-            else if (line.rfind("\t", 0) == 0 && line.find(":") != std::string::npos)
-            {
-                hydeck = line.substr(1, line.find(":") - 1);
-            }
-            else if (line.find(":") != std::string::npos)
-            {
-                hfield = line.substr(0, line.find(":"));
-            }
-            else
-            {
-                std::cout << "unknown db line: " << line;
-            }
-        }
+        parse_db_body(file, database);
         // close file
         file.close();
         _DEBUG_MSG(1, "done loading db\n");
@@ -356,30 +383,84 @@ void write_db(std::string prefix)
     if (use_db_write)
     {
         _DEBUG_MSG(1, "start writing to db\n");
-        // open file to write to
-        std::ofstream file;
-        file.open(prefix + "data/database.yml");
-        file << "version: " << TYRANT_OPTIMIZER_VERSION << std::endl;
+        const std::string db_path = prefix + "data/database.yml";
 
-        file << "xml_check_sum: " << checksumcards(prefix) << std::endl;
-        auto lines_to_write = db_limit;
-        // write map to file
-        for (auto it1 = database.begin(); lines_to_write != 0 && it1 != database.end(); ++it1)
+        // serialize concurrent writers with an interprocess lock, and merge
+        // our in-memory results into whatever is currently on disk instead of
+        // overwriting it outright: each tuo process only ever holds the
+        // subset of matchups it looked at, so a plain overwrite would make
+        // the last process to finish the only one whose results survive.
+        const std::string lock_path = db_path + ".lock";
+        { std::ofstream ensure_lock(lock_path, std::ios::app); } // file_lock requires the path to already exist
+        try
         {
-            file << it1->first << ":" << std::endl;
-            for (auto it2 = it1->second.begin(); lines_to_write != 0 && it2 != it1->second.end(); ++it2)
+            boost::interprocess::file_lock flock(lock_path.c_str());
+            boost::interprocess::scoped_lock<boost::interprocess::file_lock> guard(flock);
+
+            std::ifstream in(db_path);
+            if (in.is_open())
             {
-                file << "\t" << it2->first << ":" << std::endl;
-                for (auto it3 = it2->second.begin(); lines_to_write != 0 && it3 != it2->second.end(); ++it3)
+                std::string disk_version, disk_check;
+                parse_db_header(in, disk_version, disk_check);
+                bool compatible = !use_strict_db || (disk_version == std::string(TYRANT_OPTIMIZER_VERSION) &&
+                                                      disk_check == std::to_string(checksumcards(prefix)));
+                if (compatible)
                 {
-                    file << "\t\t" << it3->first << ": " << it3->second.wins << " " << it3->second.draws << " " << it3->second.losses << " " << it3->second.points << " " << it3->second.count << std::endl;
-                    if (lines_to_write > 0)
-                        lines_to_write--;
+                    Database on_disk;
+                    parse_db_body(in, on_disk);
+                    for (auto &f : on_disk)
+                        for (auto &d : f.second)
+                            for (auto &e : d.second)
+                            {
+                                auto &slot = database[f.first][d.first][e.first];
+                                // keep whichever result was computed from more samples
+                                if (e.second.count > slot.count)
+                                    slot = e.second;
+                            }
                 }
             }
+            in.close();
+
+            // write to a uniquely-named temp file first, then atomically rename it
+            // onto database.yml, so a concurrent reader never observes a
+            // half-written (truncated) file
+            boost::filesystem::path tmp_path = boost::filesystem::unique_path(db_path + ".tmp-%%%%-%%%%");
+            // open file to write to
+            std::ofstream file;
+            file.open(tmp_path.string());
+            file << "version: " << TYRANT_OPTIMIZER_VERSION << std::endl;
+
+            file << "xml_check_sum: " << checksumcards(prefix) << std::endl;
+            auto lines_to_write = db_limit;
+            // write map to file
+            for (auto it1 = database.begin(); lines_to_write != 0 && it1 != database.end(); ++it1)
+            {
+                file << it1->first << ":" << std::endl;
+                for (auto it2 = it1->second.begin(); lines_to_write != 0 && it2 != it1->second.end(); ++it2)
+                {
+                    file << "\t" << it2->first << ":" << std::endl;
+                    for (auto it3 = it2->second.begin(); lines_to_write != 0 && it3 != it2->second.end(); ++it3)
+                    {
+                        file << "\t\t" << it3->first << ": " << it3->second.wins << " " << it3->second.draws << " " << it3->second.losses << " " << it3->second.points << " " << it3->second.count << std::endl;
+                        if (lines_to_write > 0)
+                            lines_to_write--;
+                    }
+                }
+            }
+            // close file
+            file.close();
+            boost::system::error_code ec;
+            boost::filesystem::rename(tmp_path, db_path, ec);
+            if (ec)
+            {
+                std::cout << "DB failed to atomically update database.yml: " << ec.message() << std::endl;
+                boost::filesystem::remove(tmp_path, ec);
+            }
         }
-        // close file
-        file.close();
+        catch (const boost::interprocess::interprocess_exception &e)
+        {
+            std::cout << "DB failed to lock database.yml for writing (" << e.what() << "), skipping write" << std::endl;
+        }
         _DEBUG_MSG(1, "done writing to db\n");
     }
 }
