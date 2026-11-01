@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.5.9] - 2025-06-28
+
+### Fixed
+
+- Fixed bug of infinite loops of structures summoning structures, i.e. in "Infested Relay - Delirium"
+
 ## [6.5.5] - 2025-06-28
 
 ### Fixed
