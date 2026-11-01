@@ -1384,7 +1384,7 @@ void turn_start_phase(Field* fd)
     // reduce delay; reduce skill cooldown
     {
         auto& structures(fd->tap->structures);
-        for(unsigned index(0); index < structures.size(); ++index)
+        for(unsigned index(0), end(structures.size()); index < end; ++index)
         {
             CardStatus * status = &structures[index];
             status->m_index = index;
