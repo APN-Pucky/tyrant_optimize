@@ -78,4 +78,5 @@ std::string decktype_names[DeckType::num_decktypes]{"Deck", "Mission", "Raid", "
 signed debug_print(0);
 unsigned debug_cached(0);
 bool debug_line(false);
+bool debug_strap(false);
 std::string debug_str("");

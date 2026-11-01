@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 # partial module - included by src/cmake/CMakeLists.txt
 
 #set(TGT test-${PKG}-cmake)
-set( CMAKE_CXX_STANDARD 14 )
+set( CMAKE_CXX_STANDARD 17 )
 if (CMAKE_GENERATOR MATCHES "Visual Studio")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj /W3 /wd4061 /wd4100 /wd4820 /wd4514")
 else()
